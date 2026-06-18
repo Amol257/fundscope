@@ -11,8 +11,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -37,6 +37,7 @@ UI/.env*.local
 UI/build/
 UI/coverage/
 UI/.turbo/
+UI/lib/data.json
 
 # OS Files
 .DS_Store
