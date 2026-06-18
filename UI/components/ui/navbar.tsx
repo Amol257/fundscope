@@ -87,13 +87,15 @@ export default function Navbar() {
         </nav>
         
         <div className="flex items-center gap-4 relative z-50">
-          <button onClick={() => router.push('/screener')} className="hidden md:flex text-on-surface-variant hover:text-primary transition-all duration-200 p-2 cursor-pointer">
+          <Link href="/screener" className="hidden md:flex text-on-surface-variant hover:text-primary transition-all duration-200 p-2 cursor-pointer">
             <Search size={20} />
-          </button>
+          </Link>
           <div className="hidden md:block">
-            <MagneticButton onClick={() => router.push('/risk-profile')} className="bg-primary text-on-primary px-6 py-2.5 rounded hover:bg-primary-container transition-all text-[11px] font-bold tracking-[0.2em] uppercase cursor-pointer">
-              Get Started
-            </MagneticButton>
+            <Link href="/risk-profile" passHref>
+              <MagneticButton className="bg-primary text-on-primary px-6 py-2.5 rounded hover:bg-primary-container transition-all text-[11px] font-bold tracking-[0.2em] uppercase cursor-pointer">
+                Get Started
+              </MagneticButton>
+            </Link>
           </div>
           <button 
             className="text-on-surface-variant hover:text-primary transition-all duration-200 p-2 md:hidden"
