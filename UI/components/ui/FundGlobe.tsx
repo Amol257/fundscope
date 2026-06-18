@@ -110,7 +110,7 @@ function GlobePoints({ funds }: GlobeDataProps) {
         onClick={(e) => {
           e.stopPropagation();
           if (e.instanceId !== undefined && particles[e.instanceId]) {
-            window.location.href = `/fundscope/fund/${particles[e.instanceId].id}`;
+            window.location.href = `/fundscope/fund/${particles[e.instanceId].id}/`;
           }
         }}
       >

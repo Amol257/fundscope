@@ -169,7 +169,7 @@ function fmt(n: number | undefined | null, decimals = 1): string {
 }
 
 function fundLink(fund: CompactFund): string {
-  return `[${fund.name}](/fund/${fund.code})`;
+  return `[${fund.name}](/fund/${fund.code}/)`;
 }
 
 function fundCard(fund: CompactFund, rank?: number): string {
@@ -278,7 +278,7 @@ ${fundCard(f)}
 
 Alpha (5Y): **${fmt(f.alpha_5yr)}%** · NAV: ₹${fmt(f.nav, 2)}
 
-👉 [View full analysis](/fund/${f.code}) for detailed charts, rolling returns, and benchmark comparison.`;
+👉 [View full analysis](/fund/${f.code}/) for detailed charts, rolling returns, and benchmark comparison.`;
   }
 
   const cards = matches.map((f, i) => fundCard(f, i + 1)).join('\n\n');

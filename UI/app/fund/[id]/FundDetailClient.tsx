@@ -413,8 +413,14 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
                       <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">Loading chart...</div>
                     )
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/40 text-xs">
-                      No historical NAV timeline available.
+                    <div className="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-white/5 border border-white/5 rounded-lg backdrop-blur-sm relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none"></div>
+                      <TrendingUp className="text-[#F27D26] mb-3 opacity-80" size={36} />
+                      <h4 className="text-lg font-serif italic text-white/95 mb-2">Historical Charting Limited</h4>
+                      <p className="text-xs text-white/60 max-w-md leading-relaxed font-light">
+                        Interactive historical charting and advanced risk simulations are fully enabled for our <strong className="text-primary font-medium">32 handpicked index and active funds</strong>. 
+                        To see full timeline charts, check out the primary selections in the <Link href="/shortlist" className="text-primary underline hover:text-white transition-colors">Shortlist</Link> or run comparisons in the <Link href="/compare" className="text-primary underline hover:text-white transition-colors">Comparison Engine</Link>.
+                      </p>
                     </div>
                   )}
                 </div>

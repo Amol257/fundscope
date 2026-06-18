@@ -87,7 +87,7 @@ export default function ShortlistPage() {
                       className="border-b border-white/5 hover:bg-white/5 transition-colors group"
                     >
                       <td className="py-4 px-2">
-                        <Link href={`/fund/${fund.code}`} className="font-medium text-on-surface hover:text-primary transition-colors">
+                        <Link href={`/fund/${fund.code}/`} className="font-medium text-on-surface hover:text-primary transition-colors">
                           {fund.name.split(' - ')[0]}
                         </Link>
                       </td>

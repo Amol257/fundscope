@@ -708,7 +708,7 @@ export default function ExplorerPage() {
               className="h-full"
             >
               <TiltCard className="block h-full" maxTilt={5}>
-                <Link href={`/fund/${fund.code}`} className="glass-panel p-6 h-full flex flex-col gap-4 border border-white/10 hover:border-primary/40 transition-colors duration-300 relative overflow-hidden group cursor-pointer">
+                <Link href={`/fund/${fund.code}/`} className="glass-panel p-6 h-full flex flex-col gap-4 border border-white/10 hover:border-primary/40 transition-colors duration-300 relative overflow-hidden group cursor-pointer">
                   <div className="flex justify-between items-start z-10 gap-2">
                     <div className="flex-1">
                       <span className="inline-block text-[#F27D26] font-mono tracking-widest text-[9px] uppercase mb-1">

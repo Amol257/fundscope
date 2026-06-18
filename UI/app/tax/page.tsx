@@ -290,7 +290,7 @@ export default function TaxCorner() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {elssFunds.map((fund, index) => (
               <FadeUp key={fund.code} delay={0.1 * index}>
-                <Link href={`/fund/${fund.code}`} className="block h-full">
+                <Link href={`/fund/${fund.code}/`} className="block h-full">
                   <div className="glass-panel p-6 shadow-xl hover:bg-white/5 hover:border-white/20 transition-all cursor-pointer h-full flex flex-col justify-between group">
                     <div>
                       <div className="flex justify-between items-start mb-4">
@@ -555,7 +555,7 @@ export default function TaxCorner() {
                 {comparisonData.map((row, i) => (
                   <tr key={row.code} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                     <td className="p-4">
-                      <Link href={`/fund/${row.code}`} className="font-medium text-white/90 text-sm hover:text-[#F27D26] transition-colors truncate block max-w-[250px]">
+                      <Link href={`/fund/${row.code}/`} className="font-medium text-white/90 text-sm hover:text-[#F27D26] transition-colors truncate block max-w-[250px]">
                         {row.name}
                       </Link>
                     </td>
