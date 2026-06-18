@@ -1,0 +1,242 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.shell { display: flex; height: 580px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; background: var(--color-background-primary); }
+.sidebar { width: 220px; flex-shrink: 0; border-right: 0.5px solid var(--color-border-tertiary); padding: 16px; overflow-y: auto; background: var(--color-background-secondary); display: flex; flex-direction: column; gap: 20px; }
+.sidebar h3 { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.filter-group { display: flex; flex-direction: column; gap: 6px; }
+.filter-chip { font-size: 12px; padding: 5px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; text-align: left; }
+.filter-chip.active { background: #1D9E75; color: #fff; border-color: #1D9E75; font-weight: 500; }
+.range-row { display: flex; flex-direction: column; gap: 4px; }
+.range-row label { font-size: 12px; color: var(--color-text-secondary); }
+.range-row input[type=range] { width: 100%; }
+.range-val { font-size: 11px; color: var(--color-text-tertiary); text-align: right; }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.toolbar { padding: 12px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.search-wrap { flex: 1; position: relative; }
+.search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--color-text-tertiary); pointer-events: none; }
+.search-wrap input { width: 100%; padding-left: 32px; font-size: 13px; }
+.view-toggle { display: flex; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); overflow: hidden; }
+.view-btn { padding: 6px 10px; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; }
+.view-btn.active { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.sort-select { font-size: 12px; padding: 6px 10px; }
+.count-bar { padding: 6px 16px; font-size: 12px; color: var(--color-text-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); flex-shrink: 0; background: var(--color-background-secondary); display: flex; align-items: center; justify-content: space-between; }
+.count-bar span b { color: var(--color-text-primary); font-weight: 500; }
+.table-wrap { flex: 1; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th { position: sticky; top: 0; background: var(--color-background-secondary); padding: 8px 12px; text-align: left; font-weight: 500; font-size: 11px; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; cursor: pointer; user-select: none; }
+thead th:hover { color: var(--color-text-primary); }
+thead th .sort-icon { margin-left: 4px; opacity: 0.4; }
+thead th.sorted .sort-icon { opacity: 1; color: #1D9E75; }
+tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; transition: background 0.1s; }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody td { padding: 9px 12px; color: var(--color-text-primary); vertical-align: middle; }
+.fund-name { font-weight: 500; font-size: 12px; color: var(--color-text-primary); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fund-sub { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+.badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+.badge-s { background: #EAF3DE; color: #27500A; }
+.badge-a { background: #E6F1FB; color: #0C447C; }
+.badge-b { background: #FAEEDA; color: #633806; }
+.badge-c { background: #FBEAF0; color: #72243E; }
+.badge-d { background: #F1EFE8; color: #444441; }
+.pos { color: #1D9E75; font-weight: 500; }
+.neg { color: #D85A30; font-weight: 500; }
+.sparkline { width: 60px; height: 24px; }
+.pagination { padding: 10px 16px; border-top: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: var(--color-background-secondary); }
+.page-info { font-size: 12px; color: var(--color-text-tertiary); }
+.page-btns { display: flex; gap: 4px; }
+.page-btn { font-size: 12px; padding: 4px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+.page-btn.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+.per-page { font-size: 12px; }
+</style>
+
+<h2 class="sr-only">Fund Explorer — 10,000+ funds with filter sidebar and paginated table</h2>
+
+<div class="shell">
+  <div class="sidebar">
+    <div>
+      <h3>Category</h3>
+      <div class="filter-group">
+        <button class="filter-chip active">All funds</button>
+        <button class="filter-chip">Large cap</button>
+        <button class="filter-chip">Mid cap</button>
+        <button class="filter-chip">Small cap</button>
+        <button class="filter-chip">Index / ETF</button>
+        <button class="filter-chip">ELSS / Tax saver</button>
+        <button class="filter-chip">Hybrid</button>
+        <button class="filter-chip">Debt</button>
+        <button class="filter-chip">International</button>
+      </div>
+    </div>
+    <div>
+      <h3>Score</h3>
+      <div class="filter-group">
+        <button class="filter-chip active">All</button>
+        <button class="filter-chip">S — Superior</button>
+        <button class="filter-chip">A — Above avg</button>
+        <button class="filter-chip">B — Average</button>
+        <button class="filter-chip">C — Below avg</button>
+        <button class="filter-chip">D — Laggard</button>
+      </div>
+    </div>
+    <div>
+      <h3>5Y CAGR min %</h3>
+      <div class="range-row">
+        <input type="range" min="0" max="30" value="0" id="cagrRange" oninput="document.getElementById('cagrVal').textContent=this.value+'%'">
+        <div class="range-val" id="cagrVal">0%</div>
+      </div>
+    </div>
+    <div>
+      <h3>Sharpe min</h3>
+      <div class="range-row">
+        <input type="range" min="0" max="20" value="0" id="sharpeRange" oninput="document.getElementById('sharpeVal').textContent=(this.value/10).toFixed(1)">
+        <div class="range-val" id="sharpeVal">0.0</div>
+      </div>
+    </div>
+    <div>
+      <h3>AMC / House</h3>
+      <div class="filter-group">
+        <button class="filter-chip">HDFC</button>
+        <button class="filter-chip">Nippon</button>
+        <button class="filter-chip">ICICI Pru</button>
+        <button class="filter-chip">Mirae</button>
+        <button class="filter-chip">SBI</button>
+        <button class="filter-chip">Axis</button>
+        <button class="filter-chip active">+ 38 more</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input type="text" placeholder="Search fund name, AMC, code…" readonly>
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn" title="Card view"><i class="ti ti-layout-grid" aria-hidden="true"></i></button>
+        <button class="view-btn active" title="Table view"><i class="ti ti-table" aria-hidden="true"></i></button>
+      </div>
+      <select class="sort-select">
+        <option>Sort: Score</option>
+        <option>5Y CAGR ↓</option>
+        <option>3Y CAGR ↓</option>
+        <option>Sharpe ↓</option>
+        <option>Volatility ↑</option>
+        <option>AUM ↓</option>
+      </select>
+    </div>
+
+    <div class="count-bar">
+      <span>Showing <b>10,284</b> funds &nbsp;·&nbsp; 0 filters active</span>
+      <span>Results per page: <select class="per-page"><option>25</option><option>50</option><option>100</option></select></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Fund</th>
+            <th>Cat</th>
+            <th class="sorted">Score <span class="sort-icon">↓</span></th>
+            <th>5Y CAGR <span class="sort-icon">↕</span></th>
+            <th>3Y CAGR <span class="sort-icon">↕</span></th>
+            <th>Sharpe <span class="sort-icon">↕</span></th>
+            <th>Vol <span class="sort-icon">↕</span></th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <span class="page-info">Page 1 of 412</span>
+      <div class="page-btns">
+        <button class="page-btn">‹ Prev</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">…</button>
+        <button class="page-btn">412</button>
+        <button class="page-btn">Next ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const funds = [
+  ["HDFC Top 100 Fund – Direct", "Large cap", "S", 21.04, 18.34, 0.84, 15.4],
+  ["quant ELSS Tax Saver Fund – Direct", "ELSS", "S", 28.60, 18.05, 0.76, 12.1],
+  ["Edelweiss Mid Cap Fund – Direct", "Mid cap", "S", 27.26, 22.40, 0.78, 17.5],
+  ["Nippon India Growth Mid Cap Fund", "Mid cap", "S", 23.45, 20.23, 0.68, 16.9],
+  ["BANDHAN Nifty 50 Index Fund", "Index", "S", 9.26, 8.46, 0.36, 16.0],
+  ["Mirae Asset Midcap Fund – Direct", "Mid cap", "S", 19.75, 16.72, 0.87, 18.2],
+  ["Motilal Oswal Midcap Fund", "Mid cap", "A", 17.86, 21.60, 0.80, 17.8],
+  ["Nippon India Small Cap Fund", "Small cap", "A", 18.80, 30.53, 0.95, 17.4],
+  ["DSP Midcap Fund – Direct", "Mid cap", "A", 18.54, 12.85, 0.65, 16.2],
+  ["quant Small Cap Fund – Direct", "Small cap", "A", 39.25, 21.00, 0.37, 20.3],
+  ["SBI ELSS Tax Saver Fund", "ELSS", "A", 18.84, 15.33, 0.37, 15.1],
+  ["Nippon India Index Fund", "Index", "B", 9.15, 6.15, 0.35, 16.1],
+  ["Mirae Asset ELSS Tax Saver", "ELSS", "B", 15.03, 12.87, 0.68, 16.4],
+  ["HDFC ELSS Tax Saver – Direct", "ELSS", "B", 16.03, 10.31, 0.48, 16.2],
+  ["Axis Small Cap Fund – Direct", "Small cap", "B", 16.48, 17.20, 1.00, 14.8],
+  ["UTI Nifty 50 Index Fund", "Index", "B", 9.27, 9.33, 0.35, 16.5],
+  ["Nippon India Large Cap Fund", "Large cap", "C", 14.42, 15.48, 0.53, 16.7],
+  ["ICICI Pru Large Cap – Bluechip", "Large cap", "D", 14.02, 13.41, 0.33, 15.3],
+  ["ICICI Pru ELSS Tax Saver", "ELSS", "D", 13.06, 12.12, 0.54, 15.0],
+  ["SBI Small Cap Fund – Direct", "Small cap", "D", 13.42, 14.85, 1.06, 15.2],
+  ["HDFC Nifty 50 Index Fund", "Index", "D", 9.22, 9.16, 0.38, 16.1],
+  ["SBI Large Cap Fund", "Large cap", "D", 11.32, 11.42, 0.52, 15.1],
+  ["HDFC Small Cap Fund – Direct", "Small cap", "D", 14.36, 10.87, 0.69, 16.1],
+  ["Mirae Asset Large Cap Fund", "Large cap", "D", 10.65, 10.05, 0.54, 15.8],
+  ["Kotak Small Cap Fund – Direct", "Small cap", "D", 14.20, 14.61, 0.76, 15.4],
+];
+
+const sparkPaths = [
+  "M0,18 L10,14 L20,16 L30,10 L40,8 L50,5 L60,3",
+  "M0,20 L10,18 L20,22 L30,15 L40,12 L50,16 L60,10",
+  "M0,10 L10,12 L20,8 L30,14 L40,6 L50,4 L60,2",
+  "M0,22 L10,20 L20,24 L30,18 L40,20 L50,14 L60,12",
+  "M0,12 L10,10 L20,14 L30,8 L40,10 L50,6 L60,4",
+];
+
+function badgeClass(s) { return 'badge badge-'+s.toLowerCase(); }
+function cagrColor(v) { return v > 15 ? 'pos' : v > 10 ? '' : 'neg'; }
+
+const tbody = document.getElementById('tableBody');
+funds.forEach((f, i) => {
+  const [name, cat, score, c5, c3, sharpe, vol] = f;
+  const sp = sparkPaths[i % sparkPaths.length];
+  const spColor = c5 > 15 ? '#1D9E75' : c5 > 10 ? '#BA7517' : '#D85A30';
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>
+      <div class="fund-name">${name}</div>
+      <div class="fund-sub">${cat} &nbsp;·&nbsp; Direct · Growth</div>
+    </td>
+    <td>${cat}</td>
+    <td><span class="${badgeClass(score)}">${score}</span></td>
+    <td class="${cagrColor(c5)}">${c5.toFixed(2)}%</td>
+    <td class="${cagrColor(c3)}">${c3.toFixed(2)}%</td>
+    <td>${sharpe.toFixed(2)}</td>
+    <td>${vol.toFixed(1)}%</td>
+    <td>
+      <svg class="sparkline" viewBox="0 0 60 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="${sp}" stroke="${spColor}" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </td>
+  `;
+  tbody.appendChild(row);
+});
+
+document.querySelectorAll('.filter-chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.closest('.filter-group');
+    const isMulti = group && group.querySelectorAll('.active').length >= 0;
+    btn.classList.toggle('active');
+  });
+});
+</script>

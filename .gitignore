@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+venv/
+
+# Data and Outputs (Do not commit large JSON/CSV files or generated Excel/PNGs)
+outputs/
+data/
+*.db
+*.sqlite3
+
+# Node / UI
+UI/node_modules/
+UI/.next/
+UI/out/
+UI/.env*.local
+UI/build/
+UI/coverage/
+UI/.turbo/
+
+# OS Files
+.DS_Store
+Thumbs.db
