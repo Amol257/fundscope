@@ -1,9 +1,8 @@
 # FundScope — Indian Mutual Fund Performance Analyser
 
-[![Live UI](https://img.shields.io/badge/Live_UI-FundScope-00FF41?style=for-the-badge&logo=vercel&logoColor=black&labelColor=0D1117)](https://amol257.github.io)
+[![Live UI](https://img.shields.io/badge/Live_UI-FundScope-00FF41?style=for-the-badge&logo=vercel&logoColor=black&labelColor=0D1117)](https://amol257.github.io/fundscope)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0D1117)](https://python.org)
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=next.js&logoColor=white&labelColor=0D1117)](https://nextjs.org)
-[![License](https://img.shields.io/badge/License-MIT-c8ff00?style=for-the-badge&labelColor=0D1117)](LICENSE)
 
 A full-stack, data-driven mutual fund analytics engine for the Indian market. FundScope fetches real-time NAV data directly from AMFI, retrieves benchmark index histories from Yahoo Finance, calculates core financial metrics, builds a normalised composite scoring model, runs statistical validation, and renders the results in a Next.js 15 dashboard.
 
