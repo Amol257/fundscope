@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 // This API route fetches real-time data from AMFI (Association of Mutual Funds in India)
 // and updates the local data.json with the latest NAVs.
@@ -106,15 +106,48 @@ export async function GET() {
     // 4. Save back to data.json
     fs.writeFileSync(dataFilePath, JSON.stringify(db, null, 2));
     
-    // 5. Generate and save compact-data.json (stripping nav_history)
-    const compactDb = {
+    // 5. Update only matching funds in compact-data.json to preserve the other 5800 funds
+    const compactDataFilePath = path.join(process.cwd(), 'lib', 'compact-data.json');
+    let compactDb = {
       ...db,
       funds: db.funds.map((f: any) => {
         const { nav_history, ...rest } = f;
         return rest;
       })
     };
-    const compactDataFilePath = path.join(process.cwd(), 'lib', 'compact-data.json');
+
+    if (fs.existsSync(compactDataFilePath)) {
+      try {
+        const compactRaw = fs.readFileSync(compactDataFilePath, 'utf8');
+        const existingCompact = JSON.parse(compactRaw);
+        
+        // Map updated funds by code for fast lookup
+        const updatedMap = new Map<string, any>();
+        db.funds.forEach((f: any) => {
+          const { nav_history, ...rest } = f;
+          updatedMap.set(String(f.code).trim(), rest);
+        });
+        
+        // Merge updates into the existing 5800 funds list
+        existingCompact.funds = existingCompact.funds.map((f: any) => {
+          const updated = updatedMap.get(String(f.code).trim());
+          if (updated) {
+            return {
+              ...f,
+              ...updated,
+              sub_category: f.sub_category || updated.sub_category
+            };
+          }
+          return f;
+        });
+        
+        existingCompact.last_synced = db.last_synced;
+        compactDb = existingCompact;
+      } catch (err) {
+        console.error('Failed to merge compact-data.json, falling back to writing db funds:', err);
+      }
+    }
+    
     fs.writeFileSync(compactDataFilePath, JSON.stringify(compactDb));
     
     return NextResponse.json({ 

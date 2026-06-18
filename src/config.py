@@ -20,17 +20,17 @@ FUNDS = {
     # LARGE CAP FUNDS (benchmark: Nifty 50)
     "118825": ("Mirae Asset Large Cap Fund - Direct Plan - Growth", "Large Cap", "^NSEI"),
     "120465": ("Axis Bluechip Fund - Direct Plan - Growth Option", "Large Cap", "^NSEI"),
-    "119775": ("HDFC Top 100 Fund - Direct Plan - Growth Option", "Large Cap", "^NSEI"),
+    "119018": ("HDFC Top 100 Fund - Direct Plan - Growth Option", "Large Cap", "^NSEI"),
     "120586": ("ICICI Prudential Large Cap Fund (erstwhile Bluechip Fund) - Direct Plan - Growth", "Large Cap", "^NSEI"),
     "119598": ("SBI Large Cap Fund - Direct Plan - Growth", "Large Cap", "^NSEI"),
-    "119819": ("Kotak Bluechip Fund - Direct Plan - Growth", "Large Cap", "^NSEI"),
+    "120152": ("Kotak Bluechip Fund - Direct Plan - Growth", "Large Cap", "^NSEI"),
     "118632": ("Nippon India Large Cap Fund - Direct Plan Growth Plan - Growth Option", "Large Cap", "^NSEI"),
     
     # MID CAP FUNDS (benchmark: Nifty Midcap 150)
     "147445": ("Mirae Asset Midcap Fund- Direct Growth Option", "Mid Cap", "^NSMIDCP"),
     "118668": ("Nippon India Growth Mid Cap Fund - Direct Plan Growth Plan - Growth Option", "Mid Cap", "^NSMIDCP"),
-    "119551": ("HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth Option", "Mid Cap", "^NSMIDCP"),
-    "119816": ("Kotak Emerging Equity Scheme - Direct Plan - Growth", "Mid Cap", "^NSMIDCP"),
+    "118989": ("HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth Option", "Mid Cap", "^NSMIDCP"),
+    "119775": ("Kotak Emerging Equity Scheme - Direct Plan - Growth", "Mid Cap", "^NSMIDCP"),
     "119071": ("DSP Midcap Fund - Direct Plan - Growth", "Mid Cap", "^NSMIDCP"),
     "140228": ("Edelweiss Mid Cap Fund - Direct Plan - Growth Option", "Mid Cap", "^NSMIDCP"),
     "127042": ("Motilal Oswal Midcap Fund - Direct Plan - Growth Option", "Mid Cap", "^NSMIDCP"),
