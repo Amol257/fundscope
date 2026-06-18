@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
 
-const VIDEO_SRC = '/background-video.mp4';
+const VIDEO_SRC = '/fundscope/background-video.mp4';
 
 interface VideoBackgroundProps {
   mode?: 'hero' | 'global';

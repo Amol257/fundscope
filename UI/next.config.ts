@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
     ],
   },
   output: 'export',
+  basePath: '/fundscope',
   trailingSlash: true,
   outputFileTracingRoot: __dirname,
   transpilePackages: ['motion'],
