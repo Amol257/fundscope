@@ -19,10 +19,7 @@ export default function Footer() {
             <span className="text-[9px] uppercase tracking-widest opacity-40 mb-1 text-on-surface">Project Location</span>
             <span className="text-[11px] font-medium tracking-wider">40.7128° N, 74.0060° W</span>
           </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-[9px] uppercase tracking-widest opacity-40 mb-1 text-on-surface">Designer ID</span>
-            <span className="text-[11px] font-medium tracking-wider text-primary">@STUDIO_NEXUS</span>
-          </div>
+
         </div>
       </div>
     </footer>
