@@ -155,7 +155,7 @@ export function FundGlobe({ funds }: { funds: any[] }) {
       <Canvas 
         camera={{ position: [0, 0, 9], fov: 45 }} 
         dpr={[1, 2]}
-        eventSource={containerRef}
+        eventSource={containerRef as React.RefObject<HTMLElement>}
         eventPrefix="client"
       >
         <ambientLight intensity={0.5} />
