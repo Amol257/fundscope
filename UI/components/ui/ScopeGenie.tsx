@@ -171,7 +171,7 @@ export default function ScopeGenie() {
   const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
 
-  const funds = compactData as CompactFund[];
+  const funds = (compactData as unknown as { funds: CompactFund[] }).funds;
 
   // Auto-scroll to bottom
   const scrollToBottom = useCallback(() => {
