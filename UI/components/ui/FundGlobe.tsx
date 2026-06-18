@@ -101,8 +101,18 @@ function GlobePoints({ funds }: GlobeDataProps) {
         onPointerMove={(e) => {
           e.stopPropagation();
           setHovered(e.instanceId ?? null);
+          document.body.style.cursor = 'pointer';
         }}
-        onPointerOut={() => setHovered(null)}
+        onPointerOut={() => {
+          setHovered(null);
+          document.body.style.cursor = 'grab';
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (e.instanceId !== undefined && particles[e.instanceId]) {
+            window.location.href = `/fundscope/fund/${particles[e.instanceId].id}`;
+          }
+        }}
       >
         <sphereGeometry args={[0.02, 8, 8]} />
         <meshBasicMaterial toneMapped={false} />
