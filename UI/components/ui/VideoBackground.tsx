@@ -35,8 +35,6 @@ export function VideoBackground() {
     };
   }, []); // Run ONCE for the entire lifecycle
 
-  const videoFilter = 'sepia(0.3) hue-rotate(-10deg) saturate(1.2) brightness(1.1) contrast(1.1)';
-
   return (
     <motion.div
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
@@ -47,7 +45,6 @@ export function VideoBackground() {
       <motion.video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: videoFilter }}
         animate={{ opacity: isHomePage ? 0.35 : 0.08 }}
         transition={{ duration: 1.5 }}
         src={VIDEO_SRC}
@@ -56,6 +53,12 @@ export function VideoBackground() {
         loop
         playsInline
         preload="auto"
+      />
+
+      {/* Hardware-friendly color overlay that replaces the expensive CSS filter */}
+      <div 
+        className="absolute inset-0 bg-[#f27d26]/10 mix-blend-color pointer-events-none"
+        style={{ opacity: isHomePage ? 0.6 : 0.2 }}
       />
 
       {/* Hero Overlays for Home Page */}
