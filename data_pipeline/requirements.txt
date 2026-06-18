@@ -1,6 +1,0 @@
-pandas
-requests
-numpy
-matplotlib
-seaborn
-jupyter
