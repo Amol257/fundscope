@@ -1,101 +1,210 @@
-# Indian Mutual Fund Performance Analyser
+# FundScope — Indian Mutual Fund Performance Analyser
 
-A professional, data-driven mutual fund performance analyser for the Indian market. It fetches real-time NAV data directly from AMFI (via `mfapi.in`), retrieves benchmark index histories from Yahoo Finance, calculates core financial return and risk metrics (CAGR, Volatility, Sharpe, Alpha), builds a normalized composite scoring model, performs statistical validation, and generates detailed visualizations and Excel reports.
+[![Live UI](https://img.shields.io/badge/Live_UI-FundScope-00FF41?style=for-the-badge&logo=vercel&logoColor=black&labelColor=0D1117)](https://amol257.github.io)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0D1117)](https://python.org)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=next.js&logoColor=white&labelColor=0D1117)](https://nextjs.org)
+[![License](https://img.shields.io/badge/License-MIT-c8ff00?style=for-the-badge&labelColor=0D1117)](LICENSE)
+
+A full-stack, data-driven mutual fund analytics engine for the Indian market. FundScope fetches real-time NAV data directly from AMFI, retrieves benchmark index histories from Yahoo Finance, calculates core financial metrics, builds a normalised composite scoring model, runs statistical validation, and renders the results in a Next.js 15 dashboard.
+
+---
+
+## What It Does
+
+Most fund comparison tools show raw returns. FundScope builds a **composite score** that weights risk-adjusted performance, alpha generation, and multi-horizon returns into a single comparable number — the way a quant analyst would.
+
+```
+Composite Score = (5Y CAGR × 30%) + (3Y CAGR × 20%) + (1Y CAGR × 10%)
+               + (Sharpe Ratio × 25%) + (5Y Alpha × 15%)
+```
+
+All metrics are MinMax-normalised within their peer category before scoring, so a Large Cap fund's score is only compared against other Large Cap funds.
+
+---
+
+## Key Metrics Calculated
+
+| Metric | Description |
+|---|---|
+| **CAGR** | Compound Annual Growth Rate over 1, 3, and 5 years |
+| **Annualised Volatility** | Calculated from daily log returns |
+| **Sharpe Ratio** | Risk-adjusted efficiency (7.0% risk-free rate — India 10Y bond yield) |
+| **Alpha** | Excess return above the category benchmark over the same period |
+| **Consistency Score** | % of rolling 3-year monthly windows that returned positive gains |
+| **Composite Score** | Normalised weighted score (0–100) |
+
+---
+
+## Coverage
+
+28 mutual funds across 5 categories, each benchmarked against its corresponding index:
+
+| Category | Benchmark | Ticker |
+|---|---|---|
+| Large Cap | Nifty 50 | `^NSEI` |
+| Mid Cap | Nifty Midcap 150 | `^NSMIDCP` |
+| Small Cap | Nifty Smallcap 250 | `^CNXSC` |
+| ELSS Tax Saving | Nifty 500 | `^CRSLDX` |
+| Index Funds | Nifty 50 | `^NSEI` |
+
+---
+
+## Key Findings
+
+- **HDFC Top 100** scored a perfect **100.0** among Large Cap peers
+- **quant ELSS Tax Saver** scored **98.1** — highest in the ELSS category
+- **quant Small Cap** generated the highest alpha: **+10.29%** above its benchmark over 5 years
+- Small Cap funds averaged the highest 5-year return (**17.58%**) with significantly higher volatility
+- Active Large Cap funds marginally outperformed Index funds (12.72% vs 9.34% CAGR) but a T-test shows the gap is not statistically significant (p = 0.0588)
+
+---
 
 ## Project Structure
 
-```text
-Mutual Fund Project/
-│
-├── data/
-│   ├── raw/
-│   │   ├── nav_history.csv         # Raw daily NAV data for all 28 funds
-│   │   └── benchmark_history.csv   # Raw historical benchmark price data
-│   │
-│   └── processed/
-│       ├── fund_returns.csv        # Calculated CAGR, Sharpe, Alpha metrics
-│       ├── fund_scores.csv         # Normalized scores, grades, and ranks
-│       └── fund_scores_final.csv   # Scores appended with 3-year consistency
+```
+fundscope/
 │
 ├── src/
-│   ├── config.py                   # Setup parameters, category mapping, and tickers
-│   ├── data_fetcher.py             # AMFI NAV API and yfinance benchmark fetcher
-│   ├── returns_calculator.py       # Math logic for CAGR, Volatility, Sharpe, and Alpha
-│   ├── scoring_model.py            # Normalization and composite score calculation
-│   ├── statistical_analyser.py     # T-test and monthly-resampled rolling returns
-│   ├── sql_analyser.py             # SQLite database population and BI queries
-│   ├── chart_generator.py          # Plots dashboard grid (mf_analysis.png)
-│   └── excel_generator.py          # Builds styled multi-sheet report (MF_Report.xlsx)
+│   ├── config.py                  # Fund universe, category mapping, benchmark tickers
+│   ├── data_fetcher.py            # AMFI NAV API + yfinance benchmark fetcher
+│   ├── returns_calculator.py      # CAGR, Volatility, Sharpe, Alpha
+│   ├── scoring_model.py           # MinMax normalisation + composite score
+│   ├── statistical_analyser.py    # T-test, rolling return windows
+│   ├── sql_analyser.py            # SQLite population + 6 BI queries
+│   ├── chart_generator.py         # 6-chart PNG dashboard grid
+│   └── excel_generator.py         # 6-sheet formatted Excel report + SIP calculator
+│
+├── UI/                            # Next.js 15 frontend (TypeScript + Recharts)
+│   ├── app/
+│   │   ├── page.tsx               # Main dashboard
+│   │   ├── /methodology           # How the scoring model works
+│   │   ├── /shortlist             # Curated investment shortlist
+│   │   ├── /insights              # Key findings and comparisons
+│   │   ├── /quadrant              # Risk-return quadrant chart
+│   │   ├── /screener              # Filter funds by metric thresholds
+│   │   ├── /active-vs-index       # Active fund vs index fund analysis
+│   │   └── /about                 # Project and methodology overview
+│   ├── components/
+│   └── data/
+│       ├── fund_scores_final.csv  # Final composite scores
+│       ├── fund_returns.csv       # CAGR, Sharpe, Alpha per fund
+│       ├── investment_shortlist.csv
+│       └── data.json
 │
 ├── notebooks/
-│   └── analysis.ipynb              # Step-by-step Jupyter Notebook walkthrough
+│   └── analysis.ipynb             # Step-by-step Jupyter walkthrough
 │
 ├── outputs/
-│   ├── mf_analysis.png             # Visual 6-chart dashboard grid
-│   ├── MF_Report.xlsx              # 6-sheet formatted Excel report with SIP calculator
-│   ├── sql_query_results.txt       # Execution logs for the 6 SQL queries
-│   └── investment_shortlist.csv    # Final fund shortlist picks
+│   ├── mf_analysis.png            # 6-chart visual dashboard (PNG)
+│   ├── MF_Report.xlsx             # 6-sheet styled Excel report
+│   ├── sql_query_results.txt      # BI query execution logs
+│   └── investment_shortlist.csv   # Final shortlist picks
 │
-├── main.py                         # End-to-end pipeline execution entrypoint
-├── requirements.txt                # External dependencies list
-└── README.md                       # Documentation
+├── main.py                        # End-to-end pipeline entrypoint
+├── requirements.txt
+└── README.md
 ```
 
-## Installation & Setup
+---
 
-1. **Install Python 3.11+** if not already installed.
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Installation
 
-## Running the Pipeline
+### Python Backend
 
-You can run the entire analysis pipeline from data fetching to report generation with a single command:
+**Requirements:** Python 3.11+
+
+```bash
+git clone https://github.com/Amol257/fundscope.git
+cd fundscope
+pip install -r requirements.txt
+```
+
+**Run the full pipeline:**
 
 ```bash
 python main.py
 ```
 
-This will run all steps sequentially and produce:
-- A SQLite database: `data/mf_analysis.db`
-- Formatted SQL query outputs: `outputs/sql_query_results.txt`
-- PNG Dashboard: `outputs/mf_analysis.png`
-- Styled Excel workbook: `outputs/MF_Report.xlsx`
+This produces:
+- `data/mf_analysis.db` — SQLite database with all fund and benchmark data
+- `outputs/mf_analysis.png` — 6-chart PNG dashboard
+- `outputs/MF_Report.xlsx` — Styled 6-sheet Excel report with SIP calculator
+- `outputs/sql_query_results.txt` — Results of all 6 BI queries
+- `outputs/investment_shortlist.csv` — Handpicked fund recommendations
 
-Alternatively, you can open and run `notebooks/analysis.ipynb` to inspect the results step-by-step with inline plots.
+### Next.js UI
 
-## Handpicked Categories & Tickers
+```bash
+cd UI
+npm install
+npm run dev
+```
 
-The analyser covers 32 mutual funds across 5 distinct categories, evaluated against corresponding market benchmarks:
-- **Large Cap** evaluated against **Nifty 50** (`^NSEI`)
-- **Mid Cap** evaluated against **Nifty Midcap 150** (`^NSMIDCP`)
-- **Small Cap** evaluated against **Nifty Smallcap 250** (`^CNXSC`)
-- **ELSS Tax Saving** evaluated against **Nifty 500** (`^CRSLDX`)
-- **Index Funds** evaluated against **Nifty 50** (`^NSEI`)
+Open [http://localhost:3000](http://localhost:3000).
 
-## Key Metrics Calculated
+---
 
-- **CAGR (Compound Annual Growth Rate)**: Smoothed annual return over 1, 3, and 5 years.
-- **Annualized Volatility**: Metric of risk calculated from daily log returns.
-- **Sharpe Ratio**: Risk-adjusted efficiency metric assuming a 7.0% risk-free rate of return (India government bond yield).
-- **Alpha**: Excess return earned above the benchmark index return over the same period.
-- **Consistency Score**: The percentage of all 3-year rolling monthly windows that returned positive gains.
-- **Composite Score**: Normalized weighted score:
-  - 5-Year CAGR: **30%**
-  - 3-Year CAGR: **20%**
-  - 1-Year CAGR: **10%**
-  - Sharpe Ratio: **25%**
-  - 5-Year Alpha: **15%**
+## Notebook Walkthrough
 
-## Key Findings
+To explore results step-by-step with inline plots:
 
-- **Top Performers**: The `quant ELSS Tax Saver Fund` scored highest in its category (98.1), while `HDFC Top 100 Fund` scored a perfect 100.0 relative to its Large Cap peers.
-- **Highest Alpha**: The `quant Small Cap Fund` generated the highest excess return, beating its benchmark by an impressive 10.29% over the past 5 years.
-- **Category Summary**: Small Cap funds generated the highest average 5-year return (17.58%) but come with significantly higher volatility.
-- **Active vs Index**: Active Large Cap Funds outperformed Index Funds slightly on average over the last 5 years (12.72% vs 9.34%), though a T-test reveals this performance difference is not strongly statistically significant (p=0.0588).
+```bash
+cd notebooks
+jupyter notebook analysis.ipynb
+```
+
+---
+
+## Tech Stack
+
+**Backend (Python)**
+```
+pandas · numpy · yfinance · requests
+scipy · sqlite3 · matplotlib · openpyxl
+```
+
+**Frontend (Next.js UI)**
+```
+Next.js 15 · TypeScript · Tailwind CSS
+Recharts · Framer Motion
+```
+
+---
 
 ## Known Data Issues
 
-- **Kotak Data Gaps**: Several Kotak funds (e.g. Kotak Bluechip, Kotak Emerging Equity) have missing or repeated daily NAV historical data on AMFI, resulting in suspiciously low (< 5%) volatility calculations. The pipeline automatically flags these and skips assigning a Sharpe Ratio.
-- **Renamed Funds**: The `SBI Bluechip` fund was renamed to `SBI Large Cap Fund` by the AMC. The scheme code has been updated to `119598` to retrieve the correct recent data.
+**Kotak NAV Gaps** — Several Kotak funds (Kotak Bluechip, Kotak Emerging Equity) have missing or repeated daily NAV data on AMFI, resulting in suspiciously low volatility readings (<5%). The pipeline auto-flags these and skips Sharpe Ratio assignment for affected funds.
+
+**SBI Bluechip Rename** — Renamed to *SBI Large Cap Fund* by the AMC. Scheme code updated to `119598` to pull correct recent data.
+
+---
+
+## Roadmap
+
+- [ ] Maximum Drawdown and Calmar Ratio
+- [ ] Sortino Ratio
+- [ ] Upside / Downside Capture Ratios
+- [ ] XIRR Simulation (lump sum vs SIP)
+- [ ] Rolling Return Percentile bands
+- [ ] FastAPI backend to serve live data to the UI
+
+---
+
+## About
+
+Built by **Amol Singhal** — Data Analyst, B.Tech CSE (Data Science), ABESIT Ghaziabad (2022–2026).
+
+Targeting fintech, BFSI, AMC, and risk analytics roles at firms including ZS Associates, EXL, Fractal, and TransFi.
+
+| Channel | Link |
+|---|---|
+| Portfolio | [amol257.github.io](https://amol257.github.io) |
+| LinkedIn | [linkedin.com/in/amol-singhal257](https://www.linkedin.com/in/amol-singhal257/) |
+| Email | amol.singhal25@gmail.com |
+| GitHub | [github.com/Amol257](https://github.com/Amol257/) |
+
+---
+
+## License
+
+MIT — free to use, reference, or fork. Attribution appreciated.
