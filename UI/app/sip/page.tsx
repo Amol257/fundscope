@@ -1,12 +1,38 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback, memo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { SlidersHorizontal, TrendingUp, Lightbulb, ArrowRight, Percent, Award, Landmark, Wallet } from 'lucide-react';
 import { motion } from 'motion/react';
 import { FadeUp } from '@/components/ui/motion/FadeUp';
 import fundData from '@/lib/compact-data.json';
 import { AnimateNumber } from '@/components/ui/animated-blur-number';
+
+const FundRateSelect = memo(({ 
+  value, 
+  onChange 
+}: { 
+  value: string; 
+  onChange: (val: string) => void; 
+}) => {
+  return (
+    <select 
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full bg-[#121212] border border-white/20 text-[10px] uppercase tracking-[0.1em] font-medium text-on-surface p-3 outline-none focus:border-[#F27D26] transition-colors"
+    >
+      <option value="custom">Custom Expected Return</option>
+      {(fundData.funds || []).map(f => (
+        f.cagr_5yr !== null && (
+          <option key={f.code} value={f.cagr_5yr}>
+            {f.name.split(' - ')[0]} ({f.cagr_5yr.toFixed(1)}%)
+          </option>
+        )
+      ))}
+    </select>
+  );
+});
+FundRateSelect.displayName = 'FundRateSelect';
 
 export default function SIPCalculator() {
   const [isMounted, setIsMounted] = useState(false);
@@ -28,6 +54,13 @@ export default function SIPCalculator() {
   const [feeYears, setFeeYears] = useState(20);
   const [activeFeeRatio, setActiveFeeRatio] = useState(1.8);
   const [assumedGrossReturn, setAssumedGrossReturn] = useState(15.0);
+
+  const handleFundRateChange = useCallback((value: string) => {
+    setSelectedFundRate(value);
+    if (value !== 'custom') {
+      setExpectedReturn(parseFloat(value));
+    }
+  }, []);
 
   const formatCurrency = (num: number) => {
     if (num >= 10000000) return '₹' + (num / 10000000).toFixed(2) + 'Cr';
@@ -110,25 +143,10 @@ export default function SIPCalculator() {
                 {/* Select Rate Link */}
                 <div>
                   <label className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/50 block mb-2">Link with Mutual Fund Rate</label>
-                  <select 
+                  <FundRateSelect 
                     value={selectedFundRate}
-                    onChange={(e) => {
-                      setSelectedFundRate(e.target.value);
-                      if (e.target.value !== 'custom') {
-                        setExpectedReturn(parseFloat(e.target.value));
-                      }
-                    }}
-                    className="w-full bg-[#121212] border border-white/20 text-[10px] uppercase tracking-[0.1em] font-medium text-on-surface p-3 outline-none focus:border-[#F27D26] transition-colors"
-                  >
-                    <option value="custom">Custom Expected Return</option>
-                    {(fundData.funds || []).map(f => (
-                      f.cagr_5yr !== null && (
-                        <option key={f.code} value={f.cagr_5yr}>
-                          {f.name.split(' - ')[0]} ({f.cagr_5yr.toFixed(1)}%)
-                        </option>
-                      )
-                    ))}
-                  </select>
+                    onChange={handleFundRateChange}
+                  />
                 </div>
 
                 {/* Monthly Investment */}

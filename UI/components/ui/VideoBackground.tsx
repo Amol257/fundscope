@@ -27,39 +27,11 @@ export function VideoBackground() {
     
     if (video.readyState >= 2) setIsLoaded(true);
 
-    let rafId: number;
-    let isReversing = false;
-
-    const playForward = () => {
-      isReversing = false;
-      video.play().catch(() => {});
-    };
-
-    const playBackward = () => {
-      isReversing = true;
-      video.pause();
-      
-      const stepBackward = () => {
-        if (!isReversing) return;
-        video.currentTime = Math.max(0, video.currentTime - 0.03);
-        if (video.currentTime <= 0.1) {
-          playForward();
-        } else {
-          rafId = setTimeout(stepBackward, 30) as unknown as number;
-        }
-      };
-      
-      rafId = setTimeout(stepBackward, 30) as unknown as number;
-    };
-
-    video.addEventListener('ended', playBackward);
-    playForward();
+    video.play().catch(() => {});
 
     return () => {
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('loadeddata', handleCanPlay);
-      video.removeEventListener('ended', playBackward);
-      if (rafId) clearTimeout(rafId);
     };
   }, []); // Run ONCE for the entire lifecycle
 
@@ -81,6 +53,7 @@ export function VideoBackground() {
         src={VIDEO_SRC}
         autoPlay
         muted
+        loop
         playsInline
         preload="auto"
       />
