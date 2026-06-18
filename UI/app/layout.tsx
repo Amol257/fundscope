@@ -7,6 +7,7 @@ import ErrorSuppressor from '@/components/ErrorSuppressor';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { VideoBackground } from '@/components/ui/VideoBackground';
 import { LenisScroll } from '@/components/ui/LenisScroll';
+import ScopeGenie from '@/components/ui/ScopeGenie';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -44,6 +45,7 @@ export default function RootLayout({
           {children}
         </PageTransition>
         <Footer />
+        <ScopeGenie />
       </body>
     </html>
   );
