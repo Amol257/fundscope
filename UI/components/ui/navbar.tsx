@@ -113,10 +113,10 @@ export default function Navbar() {
                 <AnimatePresence>
                   {activeDropdown === category.name && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10, x: '-50%' }}
+                      initial={{ opacity: 0, y: 12, x: '-50%' }}
                       animate={{ opacity: 1, y: 0, x: '-50%' }}
-                      exit={{ opacity: 0, y: 10, x: '-50%' }}
-                      transition={{ duration: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
+                      exit={{ opacity: 0, y: 12, x: '-50%' }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 26 }}
                       style={{ transformOrigin: 'top center' }}
                       className="absolute left-1/2 mt-3 w-80 glass-panel bg-[#090b14]/95 backdrop-blur-lg border border-white/10 p-5 shadow-2xl rounded-2xl z-50 flex flex-col gap-1"
                     >

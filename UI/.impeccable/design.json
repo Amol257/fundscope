@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-20T02:37:52+05:30",
+  "title": "Design System: FundScope",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Solar Flame",
+        "canonical": "oklch(67% 0.23 45)",
+        "tonalRamp": [
+          "oklch(15% 0.05 45)",
+          "oklch(25% 0.08 45)",
+          "oklch(35% 0.12 45)",
+          "oklch(45% 0.16 45)",
+          "oklch(55% 0.20 45)",
+          "oklch(65% 0.23 45)",
+          "oklch(75% 0.18 45)",
+          "oklch(85% 0.12 45)",
+          "oklch(95% 0.05 45)"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Obsidian Core",
+        "canonical": "oklch(12% 0.005 240)",
+        "tonalRamp": [
+          "oklch(8% 0.002 240)",
+          "oklch(12% 0.005 240)",
+          "oklch(18% 0.008 240)",
+          "oklch(25% 0.01 240)",
+          "oklch(35% 0.015 240)",
+          "oklch(50% 0.02 240)",
+          "oklch(70% 0.01 240)",
+          "oklch(85% 0.005 240)",
+          "oklch(95% 0.002 240)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Serif",
+        "purpose": "Hero headlines only."
+      },
+      "body": {
+        "displayName": "Body Sans",
+        "purpose": "General UI labels and body text copy."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Standard buttons, tags, and small utility indicators."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-low",
+        "value": "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+        "purpose": "Applied to elevated glass panels from the background canvas."
+      }
+    ],
+    "motion": [
+      {
+        "name": "spring-tactile",
+        "value": "spring(stiffness: 300, damping: 25)",
+        "purpose": "Standard physics-based motion for buttons and layout interactions."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Standard action triggers with magnetic scale-down spring feedback.",
+      "html": "<button class=\"ds-btn-primary\">GET STARTED</button>",
+      "css": ".ds-btn-primary { background: #F27D26; color: #000000; padding: 10px 24px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background-color: #d96d1f; } .ds-btn-primary:active { transform: scale(0.95); }"
+    },
+    {
+      "name": "Glass Card",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "Tactile content pane with blurred backdrop and border refraction.",
+      "html": "<div class=\"ds-card-glass\"><h3 class=\"ds-card-title\">HDFC Mid-Cap</h3><p class=\"ds-card-desc\">Equity Mid-Cap fund showing steady performance.</p></div>",
+      "css": ".ds-card-glass { background: linear-gradient(135deg, rgba(26, 26, 26, 0.6) 0%, rgba(8, 8, 8, 0.8) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); padding: 24px; border-radius: 8px; } .ds-card-title { font-family: 'Playfair Display', serif; font-size: 20px; color: #f2f2f2; margin: 0 0 8px 0; } .ds-card-desc { font-family: 'Inter', sans-serif; font-size: 14px; color: rgba(242, 242, 242, 0.6); margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Financial Observatory",
+    "overview": "FundScope is a premium, data-driven analytics platform built for investors seeking pure mutual fund performance intelligence. Its interface is designed to evoke a scientific and modern astronomical control deck: a deep obsidian core canvas, high-contrast solar accents, and layout micro-animations that feel physical and organic.",
+    "keyCharacteristics": [
+      "Deep obsidian and charcoal dark modes avoiding pure black colors.",
+      "Precise, tactile layout borders representing glass pane refractions.",
+      "Heavy use of fluid spring physics for all hover and click states.",
+      "High-contrast, desaturated accents to ensure optimal readability.",
+      "Strict avoidance of emojis in all text copy and codebase comments."
+    ],
+    "rules": [
+      {
+        "name": "The Solar Flame Focus Rule",
+        "body": "The primary orange accent color must cover less than 10% of any viewport's total area. Its impact comes from its rarity.",
+        "section": "colors"
+      },
+      {
+        "name": "The Semantic State Consistency Rule",
+        "body": "Green (#1D9E75), blue (#378ADD), amber (#EF9F27), and red (#E24B4A) are reserved exclusively for quantitative data direction (returns, risk levels, alerts). They are never used decoratively.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sora Metrics Rule",
+        "body": "All numeric data, including returns percentages, CAGR figures, asset volumes, NAV values, and ratios, must use the font-number (Sora) typeface to ensure numbers look distinct and premium.",
+        "section": "typography"
+      },
+      {
+        "name": "The Refraction Edge Rule",
+        "body": "Elevated panels do not float with dark shadows. Instead, they use a 1px translucent white border (rgba(255, 255, 255, 0.08)) and a background blur (12px) to simulate a frosted glass refraction.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do wrap all interactive transitions in spring physics (stiffness: 300, damping: 25 for buttons).",
+      "Do display dynamic skeleton load states matching the components' dimensions.",
+      "Do align columns cleanly, wrapping tables in horizontal scroll containers on small viewports.",
+      "Do restrict line lengths of prose to a maximum of 75 characters."
+    ],
+    "donts": [
+      "Don't use emojis anywhere in the user interface or code comments.",
+      "Don't use side-stripe borders greater than 1px as a card accent or alert badge.",
+      "Don't use gradient text decorations on standard headings or labels.",
+      "Don't use generic SaaS names like 'AcmeVenture' or 'Jane Doe' for mock accounts.",
+      "Don't use fluid typography clamp values on sidebar headers or inner dashboard tables."
+    ]
+  }
+}

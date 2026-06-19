@@ -196,21 +196,21 @@ export default function InsightsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-6 shadow-2xl relative border-l-4 border-l-blue-500">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-6 shadow-2xl relative hover:border-info-blue/30 transition-all">
             <div className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/60 mb-2">Total Analyzed Funds</div>
-            <div className="text-4xl font-serif italic text-on-surface">{totalFunds}</div>
+            <div className="text-3xl md:text-4xl font-number font-bold text-on-surface">{totalFunds}</div>
             <PieChartIcon className="absolute top-6 right-6 text-white/10" size={32} />
           </motion.div>
           
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-panel p-6 shadow-2xl relative border-l-4 border-l-[#F27D26]">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-panel p-6 shadow-2xl relative hover:border-primary/30 transition-all">
             <div className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/60 mb-2">Average 5Y CAGR</div>
-            <div className="text-4xl font-serif italic text-primary">{avgCagr5Y}%</div>
+            <div className="text-3xl md:text-4xl font-number font-bold text-primary">{avgCagr5Y}%</div>
             <TrendingUp className="absolute top-6 right-6 text-primary/20" size={32} />
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-panel p-6 shadow-2xl relative border-l-4 border-l-emerald-500">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-panel p-6 shadow-2xl relative hover:border-success-teal/30 transition-all">
             <div className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/60 mb-2">Beat the Benchmark</div>
-            <div className="text-4xl font-serif italic text-emerald-400">{alphaPercentage}%</div>
+            <div className="text-3xl md:text-4xl font-number font-bold text-emerald-400">{alphaPercentage}%</div>
             <Activity className="absolute top-6 right-6 text-emerald-400/20" size={32} />
           </motion.div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Plus, Trash2, Edit3, X, Briefcase, TrendingUp, Wallet, PieChart as PieIcon, Search, Calendar, RefreshCw } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { TiltCard } from '@/components/ui/TiltCard';
 import { toast } from 'react-hot-toast';
@@ -484,126 +485,141 @@ export default function PortfolioPage() {
       )}
 
       {/* Transaction Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => setShowAddModal(false)}></div>
-          <div className="relative glass-panel bg-[#090b14] border border-white/10 w-full max-w-lg p-8 rounded-2xl shadow-2xl z-10">
-            <button className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors cursor-pointer" onClick={() => setShowAddModal(false)}>
-              <X size={20} />
-            </button>
-            <h3 className="text-2xl font-serif italic text-white mb-6">
-              {editingId ? 'Edit Investment' : 'Add Investment Transaction'}
-            </h3>
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+              onClick={() => setShowAddModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+              className="relative glass-panel bg-[#090b14] border border-white/10 w-full max-w-lg p-8 rounded-2xl shadow-2xl z-10"
+            >
+              <button className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors cursor-pointer" onClick={() => setShowAddModal(false)}>
+                <X size={20} />
+              </button>
+              <h3 className="text-2xl font-serif italic text-white mb-6">
+                {editingId ? 'Edit Investment' : 'Add Investment Transaction'}
+              </h3>
 
-            <form onSubmit={handleSaveTransaction} className="space-y-5">
-              
-              {/* Fund Search */}
-              <div className="relative">
-                <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold">Search Mutual Fund</label>
+              <form onSubmit={handleSaveTransaction} className="space-y-5">
+                
+                {/* Fund Search */}
                 <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search by AMC, name, or code..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    disabled={!!editingId}
-                    className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all pr-10"
-                  />
-                  <Search size={16} className="absolute right-3 top-3.5 text-white/40" />
+                  <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold">Search Mutual Fund</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search by AMC, name, or code..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      disabled={!!editingId}
+                      className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all pr-10"
+                    />
+                    <Search size={16} className="absolute right-3 top-3.5 text-white/40" />
+                  </div>
+                  {searchResults.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-[#0c0f1d] border border-white/10 rounded shadow-2xl overflow-hidden z-20">
+                      {searchResults.map((f) => (
+                        <button
+                          key={f.code}
+                          type="button"
+                          onClick={() => {
+                            setSelectedFund(f);
+                            setSearchQuery(f.name);
+                            setBuyNav(String(f.nav || ''));
+                          }}
+                          className="w-full text-left px-4 py-3 hover:bg-white/5 border-b border-white/5 text-xs text-white/80 block transition-colors"
+                        >
+                          <span className="font-bold text-primary block">{f.name.split(' - ')[0]}</span>
+                          <span className="text-[9px] text-white/40 block">{f.category} • Scheme: {f.code}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {searchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#0c0f1d] border border-white/10 rounded shadow-2xl overflow-hidden z-20">
-                    {searchResults.map((f) => (
-                      <button
-                        key={f.code}
-                        type="button"
-                        onClick={() => {
-                          setSelectedFund(f);
-                          setSearchQuery(f.name);
-                          setBuyNav(String(f.nav || ''));
-                        }}
-                        className="w-full text-left px-4 py-3 hover:bg-white/5 border-b border-white/5 text-xs text-white/80 block transition-colors"
-                      >
-                        <span className="font-bold text-primary block">{f.name.split(' - ')[0]}</span>
-                        <span className="text-[9px] text-white/40 block">{f.category} • Scheme: {f.code}</span>
-                      </button>
-                    ))}
+
+                {selectedFund && (
+                  <div className="bg-white/5 border border-white/5 p-4 rounded text-xs text-white/70 space-y-1">
+                    <span className="font-bold text-white block">Selected: {selectedFund.name}</span>
+                    <span>Category: {selectedFund.category} • Code: {selectedFund.code}</span>
                   </div>
                 )}
-              </div>
 
-              {selectedFund && (
-                <div className="bg-white/5 border border-white/5 p-4 rounded text-xs text-white/70 space-y-1">
-                  <span className="font-bold text-white block">Selected: {selectedFund.name}</span>
-                  <span>Category: {selectedFund.category} • Code: {selectedFund.code}</span>
-                </div>
-              )}
-
-              {/* Purchase Date */}
-              <div>
-                <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold flex items-center gap-1">
-                  <Calendar size={12} /> Purchase Date
-                </label>
-                <input
-                  type="date"
-                  value={buyDate}
-                  onChange={(e) => handleDateChange(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Invested Amount */}
+                {/* Purchase Date */}
                 <div>
-                  <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold">Invested Amount (₹)</label>
-                  <input
-                    type="number"
-                    step="any"
-                    placeholder="e.g. 50000"
-                    value={investedAmount}
-                    onChange={(e) => handleAmountChange(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all"
-                    required
-                  />
-                </div>
-
-                {/* Buy NAV */}
-                <div>
-                  <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold flex items-center justify-between">
-                    <span>Buy NAV (₹)</span>
-                    {fetchingNav && <span className="text-[9px] text-[#F27D26] animate-pulse uppercase">Fetching...</span>}
+                  <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold flex items-center gap-1">
+                    <Calendar size={12} /> Purchase Date
                   </label>
                   <input
-                    type="number"
-                    step="any"
-                    placeholder="e.g. 154.23"
-                    value={buyNav}
-                    onChange={(e) => handleNavChange(e.target.value)}
+                    type="date"
+                    value={buyDate}
+                    onChange={(e) => handleDateChange(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all"
                     required
                   />
                 </div>
-              </div>
 
-              {/* Calculated Units */}
-              {units && (
-                <div className="bg-white/5 border border-white/5 p-3 rounded flex justify-between items-center text-xs">
-                  <span className="text-white/40">Calculated Units:</span>
-                  <span className="font-number text-primary font-bold">{units}</span>
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Invested Amount */}
+                  <div>
+                    <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold">Invested Amount (₹)</label>
+                    <input
+                      type="number"
+                      step="any"
+                      placeholder="e.g. 50000"
+                      value={investedAmount}
+                      onChange={(e) => handleAmountChange(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all"
+                      required
+                    />
+                  </div>
+
+                  {/* Buy NAV */}
+                  <div>
+                    <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold flex items-center justify-between">
+                      <span>Buy NAV (₹)</span>
+                      {fetchingNav && <span className="text-[9px] text-[#F27D26] animate-pulse uppercase">Fetching...</span>}
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      placeholder="e.g. 154.23"
+                      value={buyNav}
+                      onChange={(e) => handleNavChange(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 focus:border-primary/50 text-white rounded px-4 py-3 text-xs outline-none transition-all"
+                      required
+                    />
+                  </div>
                 </div>
-              )}
 
-              <button
-                type="submit"
-                className="w-full py-3.5 bg-primary text-black hover:bg-primary-container font-bold rounded text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer mt-4"
-              >
-                {editingId ? 'Update Transaction' : 'Save Investment'}
-              </button>
-            </form>
+                {/* Calculated Units */}
+                {units && (
+                  <div className="bg-white/5 border border-white/5 p-3 rounded flex justify-between items-center text-xs">
+                    <span className="text-white/40">Calculated Units:</span>
+                    <span className="font-number text-primary font-bold">{units}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full py-3.5 bg-primary text-black hover:bg-primary-container font-bold rounded text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer mt-4"
+                >
+                  {editingId ? 'Update Transaction' : 'Save Investment'}
+                </button>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </main>
   );
 }
