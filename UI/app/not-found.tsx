@@ -1,10 +1,36 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Home, Search, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const basePath = '/fundscope';
+      
+      if (!pathname.startsWith(basePath + '/') && pathname !== basePath) {
+        const ignoredPrefixes = ['/_next', '/api', '/public', '/favicon.ico'];
+        const shouldRedirect = !ignoredPrefixes.some(prefix => pathname.startsWith(prefix));
+        
+        if (shouldRedirect) {
+          let targetPath = '';
+          if (pathname === '/' || pathname === '') {
+            targetPath = `${basePath}/`;
+          } else {
+            const normalizedPath = pathname.endsWith('/') ? pathname : `${pathname}/`;
+            targetPath = `${basePath}${normalizedPath}`;
+          }
+          window.location.replace(targetPath);
+        }
+      }
+    }
+  }, [router]);
   return (
     <main className="min-h-[80vh] flex items-center justify-center px-6">
       <motion.div

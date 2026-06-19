@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback, memo } from 'react';
+import Link from 'next/link';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { SlidersHorizontal, TrendingUp, Lightbulb, ArrowRight, Percent, Award, Landmark, Wallet } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -554,10 +555,10 @@ export default function SIPCalculator() {
               </div>
               
               <div className="z-10 mt-4 flex justify-center">
-                <a href="/shortlist" className="group flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 py-3 px-6 rounded transition-colors text-[10px] font-bold uppercase tracking-[0.2em]">
+                <Link href="/shortlist" className="group flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 py-3 px-6 rounded transition-colors text-[10px] font-bold uppercase tracking-[0.2em]">
                   <span>Find Low-Cost Funds</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </a>
+                </Link>
               </div>
             </FadeUp>
 
