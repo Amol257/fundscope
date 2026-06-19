@@ -62,7 +62,7 @@
 }
 
 :root {
-  --font-serif-family: var(--font-serif-google);
+  --font-serif-family: var(--font-medio-family);
 }
 
 .font-mode-playfair {

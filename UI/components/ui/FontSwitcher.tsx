@@ -7,7 +7,7 @@ import { Type, Check } from 'lucide-react';
 type FontMode = 'playfair' | 'medio' | 'museum';
 
 export default function FontSwitcher() {
-  const [activeFont, setActiveFont] = useState<FontMode>('playfair');
+  const [activeFont, setActiveFont] = useState<FontMode>('medio');
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -17,9 +17,12 @@ export default function FontSwitcher() {
       if (saved && (saved === 'playfair' || saved === 'medio' || saved === 'museum')) {
         setActiveFont(saved);
         applyFontClass(saved);
+      } else {
+        applyFontClass('medio');
       }
     } catch (e) {
       console.error('Failed to load font preference:', e);
+      applyFontClass('medio');
     }
   }, []);
 
