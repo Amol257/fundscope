@@ -44,7 +44,7 @@
   --color-outline-variant: rgba(255, 255, 255, 0.1);
   --color-border-subtle: rgba(255, 255, 255, 0.1);
 
-  --font-sans: "Inter", sans-serif;
+  --font-sans: var(--font-sans), sans-serif;
   --font-serif: var(--font-serif-family, var(--font-serif-google)), serif;
   --font-medio: var(--font-medio-family), serif;
   --font-museum: var(--font-museum-family), serif;

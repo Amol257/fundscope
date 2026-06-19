@@ -149,32 +149,60 @@ export default function Home() {
               
               <h1 className="text-4xl sm:text-6xl lg:text-[100px] leading-[0.85] font-light tracking-tighter italic font-serif mb-8 text-on-surface">
                 <span className="block">
-                  {words1.map((w, i) => (
-                    <motion.span
-                      key={i}
-                      custom={i}
-                      variants={enableMotion ? wordVariant : undefined}
-                      initial={enableMotion ? "hidden" : { opacity: 1 }}
-                      animate={isRevealed && enableMotion ? "visible" : enableMotion ? "hidden" : { opacity: 1 }}
-                      className="inline-block mr-4 lg:mr-6"
-                    >
-                      {enableMotion ? <ScrambleText text={w} delay={400 + i * 100} duration={24} /> : w}
-                    </motion.span>
-                  ))}
+                  <motion.span
+                    custom={0}
+                    variants={enableMotion ? wordVariant : undefined}
+                    initial={enableMotion ? "hidden" : { opacity: 1 }}
+                    animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
+                    className="inline-block mr-4 lg:mr-6"
+                  >
+                    {enableMotion ? <ScrambleText text="Is" delay={400} duration={24} /> : "Is"}
+                  </motion.span>
+                  <motion.span
+                    custom={1}
+                    variants={enableMotion ? wordVariant : undefined}
+                    initial={enableMotion ? "hidden" : { opacity: 1 }}
+                    animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
+                    className="inline-block mr-4 lg:mr-6"
+                  >
+                    {enableMotion ? <ScrambleText text="your" delay={500} duration={24} /> : "your"}
+                  </motion.span>
+                  
+                  {/* Inline Typographic Spell (Glassmorphic Pill) */}
+                  <span className="inline-flex items-center justify-center w-20 h-9 sm:w-28 sm:h-11 md:w-36 md:h-14 rounded-full align-middle bg-gradient-to-r from-primary/20 to-info-blue/20 mx-2 sm:mx-3 border border-white/10 shadow-[0_0_25px_rgba(242,125,38,0.2)] overflow-hidden relative select-none">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                    <TrendingUp size={22} className="text-[#F27D26] animate-pulse" />
+                  </span>
+
+                  <motion.span
+                    custom={2}
+                    variants={enableMotion ? wordVariant : undefined}
+                    initial={enableMotion ? "hidden" : { opacity: 1 }}
+                    animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
+                    className="inline-block mr-4 lg:mr-6"
+                  >
+                    {enableMotion ? <ScrambleText text="fund" delay={600} duration={24} /> : "fund"}
+                  </motion.span>
                 </span>
                 <span className="block not-italic font-bold tracking-[-0.04em] text-primary mt-2">
-                  {words2.map((w, i) => (
-                    <motion.span
-                      key={i}
-                      custom={i + words1.length}
-                      variants={enableMotion ? wordVariant : undefined}
-                      initial={enableMotion ? "hidden" : { opacity: 1 }}
-                      animate={isRevealed && enableMotion ? "visible" : enableMotion ? "hidden" : { opacity: 1 }}
-                      className="inline-block mr-4 lg:mr-6"
-                    >
-                      {enableMotion ? <ScrambleText text={w} delay={400 + (i + words1.length) * 100} duration={24} /> : w}
-                    </motion.span>
-                  ))}
+                  <motion.span
+                    custom={3}
+                    variants={enableMotion ? wordVariant : undefined}
+                    initial={enableMotion ? "hidden" : { opacity: 1 }}
+                    animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
+                    className="inline-block mr-4 lg:mr-6"
+                  >
+                    {enableMotion ? <ScrambleText text="actually" delay={700} duration={24} /> : "actually"}
+                  </motion.span>
+                  <motion.span
+                    custom={4}
+                    variants={enableMotion ? wordVariant : undefined}
+                    initial={enableMotion ? "hidden" : { opacity: 1 }}
+                    animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
+                    className="inline-block mr-4 lg:mr-6"
+                  >
+                    {enableMotion ? <ScrambleText text="working?" delay={800} duration={24} /> : "working?"}
+                  </motion.span>
                 </span>
               </h1>
             </div>
@@ -426,67 +454,71 @@ export default function Home() {
         )}
       </main>
 
-      {/* GSAP Reveal Sections */}
-      <section className="w-full max-w-6xl mx-auto pt-32 pb-16 px-margin-mobile md:px-margin-desktop relative z-10">
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl md:text-4xl font-serif italic text-white mb-4">Core Platform Features</h2>
-          <p className="text-on-surface-variant max-w-2xl mx-auto">Discover how FundScope transforms raw data into actionable intelligence through cutting-edge visualization and algorithmic grading.</p>
+      {/* Bento Grid Features & 3D Globe Section */}
+      <section className="w-full max-w-7xl mx-auto pt-32 pb-24 px-margin-mobile md:px-margin-desktop relative z-10">
+        <div className="mb-20 text-center">
+          <h2 className="text-3xl md:text-5xl font-serif italic text-white mb-4">Observatory Core Intelligence</h2>
+          <p className="text-on-surface-variant max-w-2xl mx-auto text-base md:text-lg font-light">
+            Discover how FundScope transforms raw data into actionable intelligence through cutting-edge visualization and algorithmic grading.
+          </p>
         </div>
 
-        <GsapReveal className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col h-full hover:border-primary/30 transition-colors group">
-            <h3 className="text-xl font-serif italic mb-4 text-white group-hover:text-primary transition-colors">Unprecedented Density</h3>
-            <p className="text-sm text-on-surface-variant font-light mb-8 flex-grow">
-              We compress thousands of data points into visual heatmaps and momentum indicators, 
-              revealing patterns invisible in standard tables.
-            </p>
-            {/* Visual Placeholder */}
-            <div className="w-full h-32 bg-black/20 rounded-xl overflow-hidden border border-white/5 relative">
-              <HeatmapVisual />
+        <GsapReveal className="grid grid-cols-1 md:grid-cols-3 gap-8 grid-auto-flow-dense">
+          {/* WebGL 3D Globe - col-span-2, row-span-2 */}
+          <div className="md:col-span-2 md:row-span-2 p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col h-[550px] md:h-[600px] hover:border-primary/30 transition-colors group relative overflow-hidden">
+            <div className="absolute top-8 left-8 z-30 max-w-xs space-y-3 pointer-events-none">
+              <h3 className="text-2xl font-serif italic text-white group-hover:text-primary transition-colors">3D Data Topology</h3>
+              <p className="text-xs text-on-surface-variant leading-relaxed font-light">
+                Explore the entire mutual fund universe as an interactive WebGL-rendered globe. Each glowing particle represents a fund, mapping out risk and reward in three dimensions.
+              </p>
+              <div className="text-[10px] text-primary font-mono tracking-widest uppercase pt-2">
+                Drag to rotate • Scroll to zoom
+              </div>
+            </div>
+            <div className="w-full h-full flex-grow relative pt-12">
+              <FundGlobe funds={funds} />
             </div>
           </div>
-          
-          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col h-full hover:border-primary/30 transition-colors group">
-            <h3 className="text-xl font-serif italic mb-4 text-white group-hover:text-primary transition-colors">Live Momentum</h3>
-            <p className="text-sm text-on-surface-variant font-light mb-8 flex-grow">
-              Watch grades transition in real-time as new market data flows in. 
-              Stay ahead of trend reversals before the quarter ends.
-            </p>
-            {/* Visual Placeholder */}
-            <div className="w-full h-32 bg-black/20 rounded-xl overflow-hidden border border-white/5 relative flex items-end">
+
+          {/* Live Momentum - col-span-1, row-span-1 */}
+          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col justify-between h-[270px] md:h-[285px] hover:border-primary/30 transition-colors group relative overflow-hidden">
+            <div>
+              <h3 className="text-xl font-serif italic mb-2 text-white group-hover:text-primary transition-colors">Live Momentum</h3>
+              <p className="text-xs text-on-surface-variant font-light leading-relaxed">
+                Watch grades transition in real-time as new market data flows in. Stay ahead of trend reversals.
+              </p>
+            </div>
+            {/* Visual */}
+            <div className="w-full h-24 bg-black/20 rounded-xl overflow-hidden border border-white/5 relative flex items-end">
               <MomentumVisual />
             </div>
           </div>
-          
-          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col h-full hover:border-primary/30 transition-colors group">
-            <h3 className="text-xl font-serif italic mb-4 text-white group-hover:text-primary transition-colors">Algorithmic Grading</h3>
-            <p className="text-sm text-on-surface-variant font-light mb-8 flex-grow">
-              Our proprietary multi-factor model evaluates risk-adjusted returns, volatility, and downside capture to assign objective grades from S to D.
-            </p>
-            {/* Visual Placeholder */}
-            <div className="w-full h-32 bg-black/20 rounded-xl overflow-hidden border border-white/5 relative flex items-center justify-center">
+
+          {/* Algorithmic Grading - col-span-1, row-span-1 */}
+          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col justify-between h-[270px] md:h-[285px] hover:border-primary/30 transition-colors group relative overflow-hidden">
+            <div>
+              <h3 className="text-xl font-serif italic mb-2 text-white group-hover:text-primary transition-colors">Proprietary Grading</h3>
+              <p className="text-xs text-on-surface-variant font-light leading-relaxed">
+                Proprietary multi-factor model evaluating risk-adjusted returns, volatility, and downside capture to assign objective grades.
+              </p>
+            </div>
+            {/* Visual */}
+            <div className="w-full h-24 bg-black/20 rounded-xl overflow-hidden border border-white/5 relative flex items-center justify-center">
               <AnimatedGradesVisual />
             </div>
           </div>
-        </GsapReveal>
-      </section>
 
-      {/* Standalone 3D Globe Section */}
-      <section className="w-full max-w-7xl mx-auto py-16 px-margin-mobile md:px-margin-desktop relative z-10">
-        <GsapReveal>
-          <div className="flex flex-col md:flex-row items-center gap-12 bg-[#02040a]/50 border border-white/10 rounded-3xl p-8 lg:p-12 glass-panel">
-            <div className="flex-1 space-y-6">
-              <h2 className="text-3xl md:text-5xl font-serif italic text-white leading-tight">
-                3D Data Topology
-              </h2>
-              <p className="text-on-surface-variant text-lg font-light leading-relaxed">
-                Explore the entire mutual fund universe as an interactive WebGL-rendered globe. 
-                Each glowing particle represents a fund, mapping out risk and reward in three dimensions. 
-                <span className="block mt-4 text-primary font-medium">Drag to rotate • Scroll to zoom</span>
+          {/* Unprecedented Density - col-span-3, row-span-1 */}
+          <div className="md:col-span-3 p-8 rounded-2xl bg-white/5 border border-white/10 glass-panel flex flex-col md:flex-row items-center justify-between gap-8 h-auto md:h-[280px] hover:border-primary/30 transition-colors group relative overflow-hidden">
+            <div className="max-w-md space-y-3">
+              <h3 className="text-2xl font-serif italic text-white group-hover:text-primary transition-colors">Unprecedented Density</h3>
+              <p className="text-sm text-on-surface-variant font-light leading-relaxed">
+                We compress thousands of data points into visual heatmaps and momentum indicators, revealing patterns invisible in standard tables.
               </p>
             </div>
-            <div className="flex-1 w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-black/40 border border-white/10 shadow-2xl relative">
-              <FundGlobe funds={funds} />
+            {/* Visual */}
+            <div className="w-full md:w-[60%] h-36 bg-black/20 rounded-xl overflow-hidden border border-white/5 relative flex-shrink-0">
+              <HeatmapVisual />
             </div>
           </div>
         </GsapReveal>

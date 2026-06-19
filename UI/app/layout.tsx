@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono, Playfair_Display, Sora } from 'next/font/google';
+import { Outfit, JetBrains_Mono, Playfair_Display, Sora } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import Navbar from '@/components/ui/navbar';
@@ -11,7 +11,7 @@ import { LenisScroll } from '@/components/ui/LenisScroll';
 import ScopeGenie from '@/components/ui/ScopeGenie';
 import FontSwitcher from '@/components/ui/FontSwitcher';
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-sans',
 });
@@ -69,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} ${sora.variable} ${medio.variable} ${ltMuseum.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} ${sora.variable} ${medio.variable} ${ltMuseum.variable}`}>
       <body suppressHydrationWarning className="grain-overlay antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-primary selection:text-on-primary">
         <ErrorSuppressor />
         <LenisScroll />
