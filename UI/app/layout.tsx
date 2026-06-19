@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Playfair_Display, Sora } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
@@ -8,6 +9,7 @@ import { PageTransition } from '@/components/ui/PageTransition';
 import { VideoBackground } from '@/components/ui/VideoBackground';
 import { LenisScroll } from '@/components/ui/LenisScroll';
 import ScopeGenie from '@/components/ui/ScopeGenie';
+import FontSwitcher from '@/components/ui/FontSwitcher';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,13 +23,39 @@ const jetbrainsMono = JetBrains_Mono({
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-serif',
+  variable: '--font-serif-google',
 });
 
 const sora = Sora({
   subsets: ['latin'],
   variable: '--font-number-family',
   weight: ['400', '600', '700', '800'],
+});
+
+const medio = localFont({
+  src: '../public/fonts/medio.otf',
+  variable: '--font-medio-family',
+});
+
+const ltMuseum = localFont({
+  src: [
+    {
+      path: '../public/fonts/LTMuseum-Light.ttf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/LTMuseum-Medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/LTMuseum-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-museum-family',
 });
 
 export const metadata: Metadata = {
@@ -41,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} ${sora.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} ${sora.variable} ${medio.variable} ${ltMuseum.variable}`}>
       <body suppressHydrationWarning className="grain-overlay antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-primary selection:text-on-primary">
         <ErrorSuppressor />
         <LenisScroll />
@@ -52,6 +80,7 @@ export default function RootLayout({
         </PageTransition>
         <Footer />
         <ScopeGenie />
+        <FontSwitcher />
       </body>
     </html>
   );

@@ -45,7 +45,9 @@
   --color-border-subtle: rgba(255, 255, 255, 0.1);
 
   --font-sans: "Inter", sans-serif;
-  --font-serif: "Playfair Display", serif;
+  --font-serif: var(--font-serif-family, var(--font-serif-google)), serif;
+  --font-medio: var(--font-medio-family), serif;
+  --font-museum: var(--font-museum-family), serif;
   --font-mono-data: "JetBrains Mono", monospace;
   --font-number: var(--font-number-family), sans-serif;
   
@@ -57,6 +59,22 @@
   --spacing-stack-sm: 0.5rem;
   --spacing-stack-md: 1rem;
   --spacing-stack-lg: 2rem;
+}
+
+:root {
+  --font-serif-family: var(--font-serif-google);
+}
+
+.font-mode-playfair {
+  --font-serif-family: var(--font-serif-google);
+}
+
+.font-mode-medio {
+  --font-serif-family: var(--font-medio-family);
+}
+
+.font-mode-museum {
+  --font-serif-family: var(--font-museum-family);
 }
 
 @layer utilities {
