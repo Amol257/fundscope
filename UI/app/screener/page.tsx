@@ -198,16 +198,16 @@ export default function ScreenerPage() {
       <div className="flex flex-col lg:flex-row flex-grow border border-white/10 rounded-xl overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-xl min-h-[700px] shadow-2xl">
         
         {/* Sidebar */}
-        <div className="w-full lg:w-[240px] flex-shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 p-5 overflow-y-auto bg-black/40 flex flex-col gap-6">
+        <div className="w-full lg:w-[240px] flex-shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 p-5 bg-black/40 flex flex-col gap-6">
           {/* Category Filter */}
           <div>
             <h3 className="text-[10px] font-mono font-medium text-white/50 uppercase tracking-widest mb-3">Category</h3>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-hide">
               {FILTERS.map(filter => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all ${
+                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all whitespace-nowrap cursor-pointer ${
                     activeFilter === filter
                       ? 'bg-primary/20 border-primary text-primary font-medium'
                       : 'bg-transparent border-transparent text-white/70 hover:bg-white/5'
@@ -222,12 +222,12 @@ export default function ScreenerPage() {
           {/* Score Filter */}
           <div>
             <h3 className="text-[10px] font-mono font-medium text-white/50 uppercase tracking-widest mb-3">Score Grade</h3>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-hide">
               {GRADES.map(grade => (
                 <button
                   key={grade}
                   onClick={() => setActiveGrade(grade)}
-                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all ${
+                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all whitespace-nowrap cursor-pointer ${
                     activeGrade === grade
                       ? 'bg-primary/20 border-primary text-primary font-medium'
                       : 'bg-transparent border-transparent text-white/70 hover:bg-white/5'

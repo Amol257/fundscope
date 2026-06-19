@@ -14,24 +14,42 @@ export function VideoBackground() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const pathname = usePathname();
-  const isHomePage = pathname === '/';
+  const isHomePage = pathname === '/' || pathname === '/fundscope' || pathname === '/fundscope/';
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    // Explicitly enforce attributes programmatically to bypass aggressive mobile restrictions
+    video.muted = true;
+    video.playsInline = true;
+    
+    // Attempt playback immediately
+    video.play().catch((err) => {
+      console.warn("Autoplay was prevented by browser security policy:", err);
+    });
 
     const handleCanPlay = () => setIsLoaded(true);
 
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('loadeddata', handleCanPlay);
     
-    if (video.readyState >= 2) setIsLoaded(true);
+    if (video.readyState >= 2) {
+      setIsLoaded(true);
+    }
 
-    video.play().catch(() => {});
+    // Safety fallback timer for mobile: force fade-in after 1 second
+    // even if media events are deferred/throttled to keep the UI layout/overlays visible.
+    const fallbackTimer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 1000);
 
     return () => {
-      video.removeEventListener('canplay', handleCanPlay);
-      video.removeEventListener('loadeddata', handleCanPlay);
+      clearTimeout(fallbackTimer);
+      if (video) {
+        video.removeEventListener('canplay', handleCanPlay);
+        video.removeEventListener('loadeddata', handleCanPlay);
+      }
     };
   }, []); // Run ONCE for the entire lifecycle
 

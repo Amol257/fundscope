@@ -22222,5 +22222,5 @@ const FUND_DATA = {
     "^NSMIDCP": "Nifty Midcap 150",
     "^CRSLDX": "Nifty 500"
   },
-  "last_updated": "2026-06-19 03:49:35"
+  "last_updated": "2026-06-19 03:52:38"
 };

@@ -147,7 +147,7 @@ export default function Home() {
                 Current Release
               </motion.span>
               
-              <h1 className="text-6xl lg:text-[100px] leading-[0.85] font-light tracking-tighter italic font-serif mb-8 text-on-surface">
+              <h1 className="text-4xl sm:text-6xl lg:text-[100px] leading-[0.85] font-light tracking-tighter italic font-serif mb-8 text-on-surface">
                 <span className="block">
                   {words1.map((w, i) => (
                     <motion.span
@@ -283,14 +283,14 @@ export default function Home() {
             )}
 
             {/* Central Dashboard Graphic */}
-            <TiltCard maxTilt={2} glareEnabled className="z-20 w-full h-[500px] max-w-4xl mx-auto flex relative shadow-[0_0_100px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden border border-white/10">
-              <div className="w-full h-full bg-[#050505]/80 backdrop-blur-xl relative overflow-hidden flex flex-col p-8">
+            <TiltCard maxTilt={2} glareEnabled className="z-20 w-full h-auto md:h-[500px] max-w-4xl mx-auto flex relative shadow-[0_0_100px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden border border-white/10">
+              <div className="w-full h-full bg-[#050505]/80 backdrop-blur-xl relative overflow-hidden flex flex-col p-6 md:p-8">
                 
                 {/* Header */}
-                <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-6 mb-8">
                   <div className="flex items-center gap-4">
                     <div className="w-3 h-3 rounded-full bg-success-teal animate-pulse"></div>
-                    <h3 className="text-2xl font-serif italic text-white tracking-wide">Latest Market Analysis</h3>
+                    <h3 className="text-xl md:text-2xl font-serif italic text-white tracking-wide">Latest Market Analysis</h3>
                   </div>
                   <div className="flex gap-2">
                     <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[9px] uppercase tracking-widest text-white/50">Live Sync</span>
@@ -299,10 +299,10 @@ export default function Home() {
                 </div>
 
                 {/* Main Data Grid */}
-                <div className="grid grid-cols-3 gap-6 h-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
                   
                   {/* Left Column: Top Funds List */}
-                  <div className="col-span-1 border-r border-white/5 pr-6 flex flex-col gap-4">
+                  <div className="col-span-1 border-b md:border-b-0 md:border-r border-white/5 pb-6 md:pb-0 md:pr-6 flex flex-col gap-4">
                     <span className="text-[10px] uppercase tracking-widest text-white/30 font-mono mb-2">Top 1Y Performers</span>
                     
                     {[...funds].filter(f => typeof f.cagr_1yr === 'number' && !isNaN(f.cagr_1yr)).sort((a, b) => b.cagr_1yr - a.cagr_1yr).slice(0, 4).map((fund, idx) => {
@@ -318,10 +318,10 @@ export default function Home() {
                   </div>
 
                   {/* Middle & Right Column: Chart & Metrics */}
-                  <div className="col-span-2 flex flex-col justify-between pl-2">
+                  <div className="col-span-1 md:col-span-2 flex flex-col justify-between pl-0 md:pl-2 gap-6 md:gap-0">
                     
                     {/* Metrics Row */}
-                    <div className="grid grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                       <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                         <span className="text-[9px] uppercase tracking-widest text-white/40 block mb-2">Total AUM Tracked</span>
                         <span className="text-2xl font-serif italic text-white">₹45.2T</span>
@@ -338,7 +338,7 @@ export default function Home() {
                     </div>
 
                     {/* Chart Area */}
-                    <div className="flex-grow relative bg-black/20 rounded-xl border border-white/5 overflow-hidden flex items-end">
+                    <div className="h-48 md:h-auto md:flex-grow relative bg-black/20 rounded-xl border border-white/5 overflow-hidden flex items-end">
                       <svg className="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 100 40">
                         {/* Grid lines */}
                         <path d="M0 10 L 100 10 M0 20 L 100 20 M0 30 L 100 30" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" fill="none" />

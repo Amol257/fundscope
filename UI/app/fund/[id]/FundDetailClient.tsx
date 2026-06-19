@@ -1,7 +1,7 @@
 'use client';
 
 import { ShieldCheck, Info, AlertTriangle, HeartCrack, HelpCircle, ArrowLeft, TrendingUp, Percent, Download } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
 import { GradeTag } from '@/components/GradeTag';
 import { AnimateNumber } from '@/components/ui/animated-blur-number';
 import { motion } from 'motion/react';
@@ -15,6 +15,12 @@ import { StaggerChildren, itemVariants } from '@/components/ui/motion/StaggerChi
 import { TiltCard } from '@/components/ui/TiltCard';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import compactData from '@/lib/compact-data.json';
+
+interface NavPoint {
+  date: string;
+  nav: number;
+}
 
 interface FundDetailClientProps {
   fund: any;
@@ -22,15 +28,134 @@ interface FundDetailClientProps {
   benchName: string;
 }
 
+// CAGR helper
+function calculateCAGR(history: any[], years: number): number | null {
+  if (!history || history.length < 2) return null;
+  const lastPt = history[history.length - 1];
+  const lastVal = lastPt.nav !== undefined ? lastPt.nav : lastPt.price;
+  if (lastVal === undefined || lastVal === null) return null;
+  const lastDate = new Date(lastPt.date);
+  
+  const targetDate = new Date(lastDate);
+  targetDate.setFullYear(targetDate.getFullYear() - years);
+  
+  let closestPt = history[0];
+  let minDiff = Math.abs(new Date(closestPt.date).getTime() - targetDate.getTime());
+  
+  for (const pt of history) {
+    const diff = Math.abs(new Date(pt.date).getTime() - targetDate.getTime());
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestPt = pt;
+    }
+  }
+  
+  const firstVal = closestPt.nav !== undefined ? closestPt.nav : closestPt.price;
+  if (firstVal === undefined || firstVal === null || firstVal === 0) return null;
+  
+  const actualYears = (new Date(lastPt.date).getTime() - new Date(closestPt.date).getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+  if (actualYears < years * 0.8) return null;
+  
+  const cagr = (Math.pow(lastVal / firstVal, 1 / actualYears) - 1) * 100;
+  return isNaN(cagr) || !isFinite(cagr) ? null : cagr;
+}
+
+// Volatility helper (monthly return standard deviation, annualized)
+function calculateVolatility(history: NavPoint[]): number | null {
+  if (!history || history.length < 3) return null;
+  const returns: number[] = [];
+  for (let i = 1; i < history.length; i++) {
+    returns.push((history[i].nav - history[i - 1].nav) / history[i - 1].nav);
+  }
+  const mean = returns.reduce((sum, r) => sum + r, 0) / returns.length;
+  const variance = returns.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / (returns.length - 1);
+  const monthlyVol = Math.sqrt(variance);
+  const annualizedVol = monthlyVol * Math.sqrt(12) * 100;
+  return isNaN(annualizedVol) || !isFinite(annualizedVol) ? null : annualizedVol;
+}
+
 export default function FundDetailClient({ fund, benchHistory, benchName }: FundDetailClientProps) {
   const router = useRouter();
 
   const [isMounted, setIsMounted] = useState(false);
+  const [navHistoryState, setNavHistoryState] = useState<NavPoint[]>(fund?.nav_history || []);
+  const [loading, setLoading] = useState(!fund?.nav_history || fund.nav_history.length === 0);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!fund) return;
+    if (fund.nav_history && fund.nav_history.length > 0) {
+      setNavHistoryState(fund.nav_history);
+      setLoading(false);
+      return;
+    }
+    
+    let active = true;
+    const fetchNavHistory = async () => {
+      setLoading(true);
+      setFetchError(null);
+      try {
+        const res = await fetch(`https://api.mfapi.in/mf/${fund.code}`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        
+        if (!data || !data.data || !Array.isArray(data.data)) {
+          throw new Error("Invalid API response format");
+        }
+        
+        if (data.data.length === 0) {
+          throw new Error("No historical NAV data found for this fund");
+        }
+        
+        if (active) {
+          // Parse data
+          const parsed = data.data.map((pt: any) => {
+            const parts = pt.date.split('-');
+            return {
+              date: `${parts[2]}-${parts[1]}-${parts[0]}`, // YYYY-MM-DD
+              nav: parseFloat(pt.nav)
+            };
+          }).filter((pt: any) => !isNaN(pt.nav));
+          
+          // Sort chronologically ascending (oldest first)
+          parsed.sort((a: any, b: any) => a.date.localeCompare(b.date));
+          
+          // Resample to monthly points (taking the last available day of each month)
+          const monthlyMap = new Map<string, NavPoint>();
+          for (const pt of parsed) {
+            const yearMonth = pt.date.substring(0, 7);
+            monthlyMap.set(yearMonth, pt);
+          }
+          
+          // Ensure we also include the absolute latest point
+          const latestPt = parsed[parsed.length - 1];
+          const resampled = Array.from(monthlyMap.values());
+          if (resampled[resampled.length - 1]?.date !== latestPt.date) {
+            resampled.push(latestPt);
+          }
+          
+          setNavHistoryState(resampled);
+          setLoading(false);
+        }
+      } catch (err: any) {
+        console.error("Fetch NAV failed:", err);
+        if (active) {
+          setFetchError(err.message || "Failed to fetch real-time NAV data");
+          setLoading(false);
+          toast.error("Real-time NAV sync failed. Displaying limited metrics.");
+        }
+      }
+    };
+    
+    fetchNavHistory();
+    return () => {
+      active = false;
+    };
+  }, [fund]);
 
   const [isInCompare, setIsInCompare] = useState(false);
   const [isInShortlist, setIsInShortlist] = useState(false);
@@ -123,10 +248,9 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
 
   // Aligned compound returns normalization
   const chartData = useMemo(() => {
-    if (!fund || !fund.nav_history || fund.nav_history.length === 0) return [];
+    if (!fund || !navHistoryState || navHistoryState.length === 0) return [];
     
-    const navHistory = fund.nav_history;
-    
+    const navHistory = navHistoryState;
     const startNav = navHistory[0].nav;
     const startDateStr = navHistory[0].date;
     const startDate = new Date(startDateStr);
@@ -179,22 +303,97 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
         benchmark: normBench !== null ? parseFloat(normBench.toFixed(1)) : null
       };
     });
+  }, [fund, navHistoryState, benchHistory]);
+
+  // Dynamic metrics computations
+  const calculatedFundCAGR = useMemo(() => {
+    if (!navHistoryState || navHistoryState.length === 0) {
+      return {
+        cagr1Yr: fund?.cagr_1yr !== undefined && fund?.cagr_1yr !== null ? fund.cagr_1yr : null,
+        cagr3Yr: fund?.cagr_3yr !== undefined && fund?.cagr_3yr !== null ? fund.cagr_3yr : null,
+        cagr5Yr: fund?.cagr_5yr !== undefined && fund?.cagr_5yr !== null ? fund.cagr_5yr : null,
+      };
+    }
+    const cagr1Yr = calculateCAGR(navHistoryState, 1) ?? fund?.cagr_1yr ?? null;
+    const cagr3Yr = calculateCAGR(navHistoryState, 3) ?? fund?.cagr_3yr ?? null;
+    const cagr5Yr = calculateCAGR(navHistoryState, 5) ?? fund?.cagr_5yr ?? null;
+    return { cagr1Yr, cagr3Yr, cagr5Yr };
+  }, [navHistoryState, fund]);
+
+  const calculatedBenchCAGR = useMemo(() => {
+    if (!benchHistory || benchHistory.length === 0) {
+      return {
+        cagr1Yr: null,
+        cagr3Yr: null,
+        cagr5Yr: fund?.bench_5yr !== undefined && fund?.bench_5yr !== null ? fund.bench_5yr : null,
+      };
+    }
+    const cagr1Yr = calculateCAGR(benchHistory, 1);
+    const cagr3Yr = calculateCAGR(benchHistory, 3);
+    const cagr5Yr = calculateCAGR(benchHistory, 5) ?? fund?.bench_5yr ?? null;
+    return { cagr1Yr, cagr3Yr, cagr5Yr };
+  }, [benchHistory, fund]);
+
+  const calculatedVolatility = useMemo(() => {
+    if (!navHistoryState || navHistoryState.length === 0) return fund?.volatility ?? null;
+    return calculateVolatility(navHistoryState) ?? fund?.volatility ?? null;
+  }, [navHistoryState, fund]);
+
+  const calculatedSharpe = useMemo(() => {
+    if (!navHistoryState || navHistoryState.length === 0) return fund?.sharpe_ratio ?? null;
+    const cagr5 = calculatedFundCAGR.cagr5Yr;
+    const vol = calculatedVolatility;
+    if (cagr5 === null || vol === null || vol === 0) return fund?.sharpe_ratio ?? null;
+    return (cagr5 - 7.0) / vol;
+  }, [navHistoryState, calculatedFundCAGR, calculatedVolatility, fund]);
+
+  const calculatedAlpha = useMemo(() => {
+    const fund5Y = calculatedFundCAGR.cagr5Yr;
+    const bench5Y = calculatedBenchCAGR.cagr5Yr;
+    if (fund5Y === null || bench5Y === null) return fund?.alpha_5yr !== undefined ? fund.alpha_5yr : null;
+    return fund5Y - bench5Y;
+  }, [calculatedFundCAGR, calculatedBenchCAGR, fund]);
+
+  const calculatedConsistency = useMemo(() => {
+    if (fund?.consistency_3yr !== undefined && fund.consistency_3yr !== null) {
+      return fund.consistency_3yr;
+    }
+    if (!navHistoryState || navHistoryState.length === 0) return null;
+    const roll3Y = rollingReturns(navHistoryState, 3);
+    const positivePeriods = roll3Y.filter(r => r.rolling > 0).length;
+    return roll3Y.length > 0 ? (positivePeriods / roll3Y.length) * 100 : null;
+  }, [navHistoryState, fund]);
+
+  const categoryRank = useMemo(() => {
+    if (fund?.rank_in_category) return fund.rank_in_category;
+    if (!fund || !compactData.funds) return 'N/A';
+    const categoryFunds = compactData.funds
+      .filter((f: any) => f.category === fund.category)
+      .sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
+    const idx = categoryFunds.findIndex((f: any) => String(f.code).trim() === String(fund.code).trim());
+    return idx !== -1 ? idx + 1 : 'N/A';
   }, [fund]);
 
   // Compute Radar Chart (Fund DNA) based on normalized performance metrics
   const dnaData = useMemo(() => {
     if (!fund) return [];
     
+    const cagr5 = calculatedFundCAGR.cagr5Yr || 0;
+    const consistency = calculatedConsistency || 50;
+    const sharpe = calculatedSharpe || 0;
+    const alpha = calculatedAlpha || 0;
+    const vol = calculatedVolatility || 15;
+
     // Scale 5Y return between 0% and 25%
-    const returnsMark = Math.min(100, Math.max(10, ((fund.cagr_5yr || 0) / 25) * 100));
+    const returnsMark = Math.min(100, Math.max(10, (cagr5 / 25) * 100));
     // Consistency is already 0-100%
-    const consistencyMark = (fund as any).consistency_3yr || 50;
+    const consistencyMark = consistency;
     // Scale Sharpe Ratio between 0.0 and 1.6
-    const sharpeMark = Math.min(100, Math.max(10, ((fund.sharpe_ratio || 0) / 1.6) * 100));
+    const sharpeMark = Math.min(100, Math.max(10, (sharpe / 1.6) * 100));
     // Scale Alpha between -5% and +10%
-    const alphaMark = Math.min(100, Math.max(10, (((fund.alpha_5yr || 0) + 5) / 15) * 100));
+    const alphaMark = Math.min(100, Math.max(10, ((alpha + 5) / 15) * 100));
     // Scale Volatility (Lower volatility = Higher defence mark. Volatility between 22% and 4%)
-    const defensiveMark = Math.min(100, Math.max(10, ((22 - (fund.volatility || 15)) / 18) * 100));
+    const defensiveMark = Math.min(100, Math.max(10, ((22 - vol) / 18) * 100));
 
     return [
       { subject: 'Returns (5Y)', A: Math.round(returnsMark), fullMark: 100 },
@@ -203,16 +402,16 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
       { subject: 'Active Alpha', A: Math.round(alphaMark), fullMark: 100 },
       { subject: 'Risk Defence', A: Math.round(defensiveMark), fullMark: 100 }
     ];
-  }, [fund]);
+  }, [fund, calculatedFundCAGR, calculatedConsistency, calculatedSharpe, calculatedAlpha, calculatedVolatility]);
 
   // Compute advanced metrics
   const advancedMetrics = useMemo(() => {
-    if (!fund || !fund.nav_history || fund.nav_history.length === 0) return null;
-    const navHistory = fund.nav_history;
+    if (!fund || !navHistoryState || navHistoryState.length === 0) return null;
+    const navHistory = navHistoryState;
     
     const mdd = maxDrawdown(navHistory);
-    const calmar = calmarRatio(fund.cagr_5yr || 0, mdd);
-    const sortino = sortinoRatio(navHistory, fund.cagr_5yr || 0, 7.0);
+    const calmar = calmarRatio(calculatedFundCAGR.cagr5Yr || 0, mdd);
+    const sortino = sortinoRatio(navHistory, calculatedFundCAGR.cagr5Yr || 0, 7.0);
     const capture = captureRatios(navHistory, benchHistory);
     const xirr = sipXirr(navHistory, 10000);
     
@@ -221,7 +420,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
     const roll3Y = rollingReturns(navHistory, 3);
     
     return { mdd, calmar, sortino, capture, xirr, roll1Y, roll3Y };
-  }, [fund]);
+  }, [fund, navHistoryState, calculatedFundCAGR, benchHistory]);
 
   const [activeRollingTab, setActiveRollingTab] = useState<'1Y' | '3Y'>('3Y');
 
@@ -289,7 +488,59 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
 
   const gradeLetter = fund.score_grade !== 'N/A' ? fund.score_grade.split(' - ')[0] : 'N/A';
   const rec = getRecommendation(gradeLetter);
-  const volRating = (fund.volatility || 0) < 10 ? 'Low' : (fund.volatility || 0) < 16 ? 'Moderate' : 'High';
+  const volRating = (calculatedVolatility || 0) < 10 ? 'Low' : (calculatedVolatility || 0) < 16 ? 'Moderate' : 'High';
+
+  if (loading) {
+    return (
+      <div className="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg pt-28 min-h-screen">
+        {/* Back Button Skeleton */}
+        <div className="w-16 h-4 bg-white/5 animate-pulse rounded mb-8"></div>
+
+        {/* Hero Section Skeleton */}
+        <div className="mb-stack-lg flex flex-col lg:flex-row justify-between items-start lg:items-end gap-stack-md">
+          <div className="space-y-4 w-full lg:max-w-2xl">
+            <div className="flex gap-2">
+              <div className="w-20 h-4 bg-white/5 animate-pulse rounded"></div>
+              <div className="w-24 h-4 bg-white/5 animate-pulse rounded"></div>
+            </div>
+            <div className="w-3/4 h-12 bg-white/5 animate-pulse rounded mb-2"></div>
+            <div className="w-1/2 h-4 bg-white/5 animate-pulse rounded"></div>
+            <div className="flex gap-4 pt-4">
+              <div className="w-32 h-10 bg-white/5 animate-pulse rounded"></div>
+              <div className="w-36 h-10 bg-white/5 animate-pulse rounded"></div>
+              <div className="w-36 h-10 bg-white/5 animate-pulse rounded"></div>
+            </div>
+          </div>
+          <div className="w-32 h-16 bg-white/5 animate-pulse rounded mt-6 lg:mt-0"></div>
+        </div>
+
+        {/* Main Content Grid Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            {/* Chart Skeleton */}
+            <div className="h-[500px] glass-panel p-8 flex flex-col justify-between relative overflow-hidden bg-white/[0.02] border border-white/5 rounded-xl">
+              <div className="space-y-2">
+                <div className="w-1/3 h-8 bg-white/5 animate-pulse rounded"></div>
+                <div className="w-1/4 h-4 bg-white/5 animate-pulse rounded"></div>
+              </div>
+              <div className="flex-grow w-full mt-8 bg-white/[0.01] border border-white/5 animate-pulse rounded-lg flex items-center justify-center">
+                <span className="text-white/20 text-xs font-mono tracking-widest uppercase">Syncing Real-time Mutual Fund Data...</span>
+              </div>
+            </div>
+          </div>
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-28 glass-panel bg-white/[0.02] border border-white/5 animate-pulse rounded-xl"></div>
+              <div className="h-28 glass-panel bg-white/[0.02] border border-white/5 animate-pulse rounded-xl"></div>
+              <div className="h-28 glass-panel bg-white/[0.02] border border-white/5 animate-pulse rounded-xl"></div>
+              <div className="h-28 glass-panel bg-white/[0.02] border border-white/5 animate-pulse rounded-xl"></div>
+            </div>
+            <div className="h-[340px] glass-panel bg-white/[0.02] border border-white/5 animate-pulse rounded-xl"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <StaggerChildren id="fund-detail-content" className="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg pt-28 min-h-screen">
@@ -310,10 +561,10 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
             <span className="text-[10px] font-mono tracking-widest text-[#F27D26] uppercase">Mutual Fund</span>
             <span className="text-[10px] font-mono tracking-widest text-[#F27D26] uppercase">•</span>
             <span className="text-[10px] font-mono tracking-widest text-[#F27D26] uppercase">{fund.category}</span>
-            {(fund as any).sub_category && (fund as any).sub_category !== fund.category && (
+            {fund.sub_category && fund.sub_category !== fund.category && (
               <>
                 <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase">›</span>
-                <span className="text-[10px] font-mono tracking-widest text-white/60 uppercase">{(fund as any).sub_category}</span>
+                <span className="text-[10px] font-mono tracking-widest text-white/60 uppercase">{fund.sub_category}</span>
               </>
             )}
           </div>
@@ -345,7 +596,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
               <span className="text-6xl font-serif italic text-primary">{gradeLetter}</span>
               <div className="flex flex-col items-start gap-1">
                 <div className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center relative bg-surface-container-low">
-                  <span className="text-xs font-mono font-bold text-white/80">{fund.score !== null ? <AnimateNumber value={Math.round(fund.score)} /> : 'N/A'}</span>
+                  <span className="text-xs font-number font-bold text-white/80">{fund.score !== null ? <AnimateNumber value={Math.round(fund.score)} /> : 'N/A'}</span>
                 </div>
                 <GradeTag grade={fund.score_grade} className="text-[10px]" />
               </div>
@@ -371,7 +622,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
                     <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Growth of ₹100 invested on starting date</p>
                   </div>
                   <div className="text-[10px] font-mono tracking-widest text-[#F27D26] uppercase">
-                    {(fund as any).data_from} to {(fund as any).data_to}
+                    {navHistoryState[0] ? new Date(navHistoryState[0].date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A'} to {navHistoryState[navHistoryState.length - 1] ? new Date(navHistoryState[navHistoryState.length - 1].date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A'}
                   </div>
                 </div>
                 
@@ -516,7 +767,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
               <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
                 <MetricCard 
                   label="5Y CAGR" 
-                  value={fund.cagr_5yr !== null ? `${fund.cagr_5yr.toFixed(2)}%` : 'N/A'} 
+                  value={calculatedFundCAGR.cagr5Yr !== null ? `${calculatedFundCAGR.cagr5Yr.toFixed(2)}%` : 'N/A'} 
                   valueClassName="text-primary"
                   className="h-full"
                 />
@@ -526,7 +777,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
               <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
                 <MetricCard 
                   label="Sharpe Ratio" 
-                  value={fund.sharpe_ratio !== null ? fund.sharpe_ratio.toFixed(3) : 'N/A'} 
+                  value={calculatedSharpe !== null ? calculatedSharpe.toFixed(3) : 'N/A'} 
                   tooltip="Sharpe Ratio = (Fund Return − 7.0% risk-free rate) / Volatility. Above 0.5 is considered good for Indian equity funds."
                   className="h-full"
                 />
@@ -536,8 +787,8 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
               <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
                 <MetricCard 
                   label="Active Alpha (5Y)" 
-                  value={fund.alpha_5yr !== null ? (fund.alpha_5yr >= 0 ? '+' : '') + fund.alpha_5yr.toFixed(2) + '%' : 'N/A'} 
-                  valueClassName={fund.alpha_5yr !== null && fund.alpha_5yr >= 0 ? 'text-emerald-400' : 'text-red-400'}
+                  value={calculatedAlpha !== null ? (calculatedAlpha >= 0 ? '+' : '') + calculatedAlpha.toFixed(2) + '%' : 'N/A'} 
+                  valueClassName={calculatedAlpha !== null && calculatedAlpha >= 0 ? 'text-emerald-400' : 'text-red-400'}
                   className="h-full"
                 />
               </TiltCard>
@@ -546,7 +797,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
               <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
                 <MetricCard 
                   label="Volatility" 
-                  value={fund.volatility !== null ? `${fund.volatility.toFixed(1)}%` : 'N/A'} 
+                  value={calculatedVolatility !== null ? `${calculatedVolatility.toFixed(1)}%` : 'N/A'} 
                   delta={`(${volRating})`}
                   valueClassName="text-white/60 text-xl"
                   className="h-full"
@@ -616,11 +867,11 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
               <div className="flex justify-between items-end border-t border-white/5 pt-4 mt-auto">
                 <div>
                   <span className="text-[9px] uppercase tracking-[0.2em] text-white/40 block">3Y Rolling Consistency</span>
-                  <span className="text-3xl font-serif italic text-primary font-bold">{(fund as any).consistency_3yr !== undefined && (fund as any).consistency_3yr !== null ? Number((fund as any).consistency_3yr).toFixed(1) + '%' : 'N/A'}</span>
+                  <span className="text-3xl font-number text-primary font-bold">{calculatedConsistency !== null ? Number(calculatedConsistency).toFixed(1) + '%' : 'N/A'}</span>
                 </div>
                 <div className="text-right">
                   <span className="text-[9px] uppercase tracking-[0.2em] text-white/40 block">Category Rank</span>
-                  <span className="text-3xl font-serif italic text-on-surface font-bold">#{(fund as any).rank_in_category || 'N/A'}</span>
+                  <span className="text-3xl font-number text-on-surface font-bold">#{categoryRank}</span>
                 </div>
               </div>
             </div>
@@ -741,32 +992,40 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
                       <th className="py-3 text-[10px] uppercase tracking-[0.2em] text-white/40 font-normal text-right">Alpha</th>
                     </tr>
                   </thead>
-                  <tbody className="text-sm">
+                  <tbody className="text-sm font-number">
                     <tr className="border-b border-white/5">
-                      <td className="py-4 text-on-surface">1 Year</td>
-                      <td className="py-4 text-right font-serif italic text-primary">{fund.cagr_1yr !== null ? `${Number(fund.cagr_1yr).toFixed(2)}%` : 'N/A'}</td>
-                      <td className="py-4 text-right font-serif italic text-white/60">N/A</td>
-                      <td className="py-4 text-right font-serif italic text-white/60">-</td>
+                      <td className="py-4 text-on-surface font-sans">1 Year</td>
+                      <td className="py-4 text-right font-semibold text-primary">{calculatedFundCAGR.cagr1Yr !== null ? `${Number(calculatedFundCAGR.cagr1Yr).toFixed(2)}%` : 'N/A'}</td>
+                      <td className="py-4 text-right text-white/60">{calculatedBenchCAGR.cagr1Yr !== null ? `${Number(calculatedBenchCAGR.cagr1Yr).toFixed(2)}%` : 'N/A'}</td>
+                      <td className={`py-4 text-right font-bold ${calculatedFundCAGR.cagr1Yr !== null && calculatedBenchCAGR.cagr1Yr !== null && (calculatedFundCAGR.cagr1Yr - calculatedBenchCAGR.cagr1Yr) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {calculatedFundCAGR.cagr1Yr !== null && calculatedBenchCAGR.cagr1Yr !== null 
+                          ? `${(calculatedFundCAGR.cagr1Yr - calculatedBenchCAGR.cagr1Yr) >= 0 ? '+' : ''}${(calculatedFundCAGR.cagr1Yr - calculatedBenchCAGR.cagr1Yr).toFixed(2)}%`
+                          : '-'}
+                      </td>
                     </tr>
                     <tr className="border-b border-white/5">
-                      <td className="py-4 text-on-surface">3 Years</td>
-                      <td className="py-4 text-right font-serif italic text-primary">{fund.cagr_3yr !== null ? `${Number(fund.cagr_3yr).toFixed(2)}%` : 'N/A'}</td>
-                      <td className="py-4 text-right font-serif italic text-white/60">N/A</td>
-                      <td className="py-4 text-right font-serif italic text-white/60">-</td>
+                      <td className="py-4 text-on-surface font-sans">3 Years</td>
+                      <td className="py-4 text-right font-semibold text-primary">{calculatedFundCAGR.cagr3Yr !== null ? `${Number(calculatedFundCAGR.cagr3Yr).toFixed(2)}%` : 'N/A'}</td>
+                      <td className="py-4 text-right text-white/60">{calculatedBenchCAGR.cagr3Yr !== null ? `${Number(calculatedBenchCAGR.cagr3Yr).toFixed(2)}%` : 'N/A'}</td>
+                      <td className={`py-4 text-right font-bold ${calculatedFundCAGR.cagr3Yr !== null && calculatedBenchCAGR.cagr3Yr !== null && (calculatedFundCAGR.cagr3Yr - calculatedBenchCAGR.cagr3Yr) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {calculatedFundCAGR.cagr3Yr !== null && calculatedBenchCAGR.cagr3Yr !== null 
+                          ? `${(calculatedFundCAGR.cagr3Yr - calculatedBenchCAGR.cagr3Yr) >= 0 ? '+' : ''}${(calculatedFundCAGR.cagr3Yr - calculatedBenchCAGR.cagr3Yr).toFixed(2)}%`
+                          : '-'}
+                      </td>
                     </tr>
                     <tr>
-                      <td className="py-4 text-on-surface">5 Years</td>
-                      <td className="py-4 text-right font-serif italic text-primary">{fund.cagr_5yr !== null ? `${Number(fund.cagr_5yr).toFixed(2)}%` : 'N/A'}</td>
-                      <td className="py-4 text-right font-serif italic text-white/80">{(fund as any).bench_5yr !== undefined && (fund as any).bench_5yr !== null ? `${Number((fund as any).bench_5yr).toFixed(2)}%` : 'N/A'}</td>
-                      <td className={`py-4 text-right font-serif italic font-bold ${fund.alpha_5yr !== null && Number(fund.alpha_5yr) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                        {fund.alpha_5yr !== null ? `${Number(fund.alpha_5yr) >= 0 ? '+' : ''}${Number(fund.alpha_5yr).toFixed(2)}%` : 'N/A'}
+                      <td className="py-4 text-on-surface font-sans">5 Years</td>
+                      <td className="py-4 text-right font-semibold text-primary">{calculatedFundCAGR.cagr5Yr !== null ? `${Number(calculatedFundCAGR.cagr5Yr).toFixed(2)}%` : 'N/A'}</td>
+                      <td className="py-4 text-right text-white/80">{calculatedBenchCAGR.cagr5Yr !== null ? `${Number(calculatedBenchCAGR.cagr5Yr).toFixed(2)}%` : 'N/A'}</td>
+                      <td className={`py-4 text-right font-bold ${calculatedAlpha !== null && Number(calculatedAlpha) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {calculatedAlpha !== null ? `${Number(calculatedAlpha) >= 0 ? '+' : ''}${Number(calculatedAlpha).toFixed(2)}%` : 'N/A'}
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <p className="mt-auto pt-6 text-[9px] uppercase tracking-[0.2em] text-white/40">
-                Note: Benchmark data currently available for 5-year annualized periods.
+                Note: Benchmark comparisons are calculated based on overlapping historical date ranges.
               </p>
             </div>
           </TiltCard>

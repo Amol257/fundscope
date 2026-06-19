@@ -47,6 +47,7 @@
   --font-sans: "Inter", sans-serif;
   --font-serif: "Playfair Display", serif;
   --font-mono-data: "JetBrains Mono", monospace;
+  --font-number: var(--font-number-family), sans-serif;
   
   /* Utilities for layout */
   --spacing-container-max: 1800px;

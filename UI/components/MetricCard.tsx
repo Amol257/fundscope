@@ -77,7 +77,7 @@ export function MetricCard({
       </div>
       
       <div className="flex items-baseline gap-3 relative z-10 w-full">
-        <div className={cn("text-2xl md:text-3xl font-serif italic text-on-surface", valueClassName)}>
+        <div className={cn("text-2xl md:text-3xl font-number font-semibold tracking-tight text-on-surface", valueClassName)}>
           {value}
         </div>
         {delta && (

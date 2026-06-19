@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google';
+import { Inter, JetBrains_Mono, Playfair_Display, Sora } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
@@ -24,6 +24,12 @@ const playfairDisplay = Playfair_Display({
   variable: '--font-serif',
 });
 
+const sora = Sora({
+  subsets: ['latin'],
+  variable: '--font-number-family',
+  weight: ['400', '600', '700', '800'],
+});
+
 export const metadata: Metadata = {
   title: 'FundScope | Precision Mutual Fund Analytics',
   description: 'Analyze complex mutual fund data, strip away the marketing, and show you exactly how your money is performing.',
@@ -35,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} ${sora.variable}`}>
       <body suppressHydrationWarning className="grain-overlay antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-primary selection:text-on-primary">
         <ErrorSuppressor />
         <LenisScroll />
