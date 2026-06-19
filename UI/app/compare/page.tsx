@@ -206,7 +206,7 @@ export default function ComparePage() {
             Align inception dates and compare compound historical returns, volatility, risk-adjusted Sharpe ratios, and active alpha metrics.
           </p>
         </div>
-        <button onClick={exportPDF} disabled={isExporting} className="px-6 py-3 border border-white/20 hover:bg-white/5 text-white text-[10px] uppercase tracking-[0.2em] font-bold transition-colors flex items-center gap-2 self-start md:self-end shrink-0">
+        <button onClick={exportPDF} disabled={isExporting} className="px-6 py-3 border border-white/20 hover:bg-white/5 active:scale-[0.98] text-white text-[10px] uppercase tracking-[0.2em] font-bold transition-all flex items-center gap-2 self-start md:self-end shrink-0">
           <Download size={14} />
           {isExporting ? "Exporting..." : "Download Report"}
         </button>

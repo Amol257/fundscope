@@ -207,7 +207,7 @@ export default function ScreenerPage() {
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all whitespace-nowrap cursor-pointer ${
+                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all whitespace-nowrap cursor-pointer active:scale-[0.97] ${
                     activeFilter === filter
                       ? 'bg-primary/20 border-primary text-primary font-medium'
                       : 'bg-transparent border-transparent text-white/70 hover:bg-white/5'
@@ -227,7 +227,7 @@ export default function ScreenerPage() {
                 <button
                   key={grade}
                   onClick={() => setActiveGrade(grade)}
-                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all whitespace-nowrap cursor-pointer ${
+                  className={`text-left text-xs px-3 py-2 rounded-md border transition-all whitespace-nowrap cursor-pointer active:scale-[0.97] ${
                     activeGrade === grade
                       ? 'bg-primary/20 border-primary text-primary font-medium'
                       : 'bg-transparent border-transparent text-white/70 hover:bg-white/5'
@@ -260,7 +260,7 @@ export default function ScreenerPage() {
             {/* Download Button */}
             <button 
               onClick={downloadCSV}
-              className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 hover:border-primary/50 text-white px-4 py-2 rounded-md text-xs font-medium transition-colors"
+              className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 hover:border-primary/50 text-white px-4 py-2 rounded-md text-xs font-medium active:scale-[0.98] transition-all"
             >
               <Download size={14} className="text-primary" />
               Export CSV
@@ -346,7 +346,7 @@ export default function ScreenerPage() {
                       <td className="p-4 text-right">
                         <button
                           onClick={() => toggleCompare(fund)}
-                          className={`w-8 h-8 rounded-full inline-flex items-center justify-center transition-all ${
+                          className={`w-8 h-8 rounded-full inline-flex items-center justify-center transition-all active:scale-[0.9] ${
                             compareList.find(f => f.code === fund.code)
                               ? 'bg-primary/20 text-primary hover:bg-red-500/20 hover:text-red-400'
                               : 'bg-white/5 text-white/40 hover:bg-primary/20 hover:text-primary'
@@ -376,14 +376,14 @@ export default function ScreenerPage() {
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 bg-transparent border border-white/10 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-xs transition-colors text-white"
+                  className="px-3 py-1 bg-transparent border border-white/10 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-xs active:scale-[0.97] transition-all text-white"
                 >
                   &lsaquo; Prev
                 </button>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 bg-transparent border border-white/10 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-xs transition-colors text-white"
+                  className="px-3 py-1 bg-transparent border border-white/10 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-xs active:scale-[0.97] transition-all text-white"
                 >
                   Next &rsaquo;
                 </button>

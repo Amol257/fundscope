@@ -219,12 +219,13 @@ export default function SIPCalculator() {
                     </div>
                     <button 
                       onClick={() => setAdjustForInflation(!adjustForInflation)}
-                      className={`w-10 h-5 rounded-full p-0.5 transition-colors ${adjustForInflation ? 'bg-[#F27D26]' : 'bg-white/20'}`}
+                      className={`w-10 h-5 rounded-full p-0.5 transition-all active:scale-95 ${adjustForInflation ? 'bg-[#F27D26]' : 'bg-white/20'}`}
                     >
                       <motion.div 
                         layout
                         className="w-4 h-4 bg-white rounded-full shadow-sm"
                         animate={{ x: adjustForInflation ? 20 : 0 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
                       />
                     </button>
                   </div>
@@ -555,7 +556,7 @@ export default function SIPCalculator() {
               </div>
               
               <div className="z-10 mt-4 flex justify-center">
-                <Link href="/shortlist" className="group flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 py-3 px-6 rounded transition-colors text-[10px] font-bold uppercase tracking-[0.2em]">
+                <Link href="/shortlist" className="group flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 active:scale-[0.98] text-red-400 py-3 px-6 rounded transition-all text-[10px] font-bold uppercase tracking-[0.2em]">
                   <span>Find Low-Cost Funds</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </Link>

@@ -62,7 +62,7 @@ export function MetricCard({
           {tooltip && (
             <div className="relative inline-flex ml-1">
               <Info size={12} className="text-white/40 cursor-help hover:text-white/80 transition-colors" />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[#0c0f1d] border border-white/10 rounded shadow-xl text-xs text-white/80 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[#0c0f1d] border border-white/10 rounded shadow-xl text-xs text-white/80 opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 pointer-events-none transition-all duration-150 ease-out origin-bottom z-50">
                 {tooltip}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-4 border-transparent border-t-[#0c0f1d]"></div>
               </div>

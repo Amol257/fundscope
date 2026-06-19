@@ -431,7 +431,7 @@ export default function ExplorerPage() {
                 <button
                   key={p}
                   onClick={() => setBarPeriod(p as any)}
-                  className={`px-3 py-1 text-[10px] font-mono rounded transition-colors ${barPeriod === p ? 'bg-[#F27D26] text-white' : 'text-white/60 hover:text-white'}`}
+                  className={`px-3 py-1 text-[10px] font-mono rounded transition-all active:scale-95 cursor-pointer ${barPeriod === p ? 'bg-[#F27D26] text-white' : 'text-white/60 hover:text-white'}`}
                 >
                   {p}
                 </button>
@@ -679,7 +679,7 @@ export default function ExplorerPage() {
             <button
               key={cat}
               onClick={() => setTop6Filter(cat)}
-              className={`px-4 py-1.5 rounded-full text-[10px] uppercase tracking-wider whitespace-nowrap transition-colors border ${top6Filter === cat ? 'bg-primary/20 border-primary text-primary' : 'bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/30'}`}
+              className={`px-4 py-1.5 rounded-full text-[10px] uppercase tracking-wider whitespace-nowrap transition-all active:scale-95 border cursor-pointer ${top6Filter === cat ? 'bg-primary/20 border-primary text-primary' : 'bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/30'}`}
             >
               {cat}
             </button>
@@ -708,7 +708,7 @@ export default function ExplorerPage() {
               className="h-full"
             >
               <TiltCard className="block h-full" maxTilt={5}>
-                <Link href={`/fund/${fund.code}/`} className="glass-panel p-6 h-full flex flex-col gap-4 border border-white/10 hover:border-primary/40 transition-colors duration-300 relative overflow-hidden group cursor-pointer">
+                <Link href={`/fund/${fund.code}/`} className="glass-panel p-6 h-full flex flex-col gap-4 border border-white/10 hover:border-primary/40 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 relative overflow-hidden group cursor-pointer">
                   <div className="flex justify-between items-start z-10 gap-2">
                     <div className="flex-1">
                       <span className="inline-block text-[#F27D26] font-mono tracking-widest text-[9px] uppercase mb-1">

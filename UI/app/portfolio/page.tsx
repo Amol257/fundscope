@@ -288,7 +288,7 @@ export default function PortfolioPage() {
           <button 
             onClick={() => updateCurrentValues(portfolio)} 
             disabled={isUpdating || portfolio.length === 0}
-            className="px-4 py-2.5 border border-white/20 hover:bg-white/5 disabled:opacity-40 text-white rounded text-[10px] uppercase tracking-[0.2em] font-bold transition-colors flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2.5 border border-white/20 hover:bg-white/5 disabled:opacity-40 text-white rounded text-[10px] uppercase tracking-[0.2em] font-bold active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
           >
             <RefreshCw size={14} className={isUpdating ? 'animate-spin' : ''} />
             Sync NAVs
@@ -304,7 +304,7 @@ export default function PortfolioPage() {
               setBuyNav('');
               setShowAddModal(true);
             }} 
-            className="px-6 py-2.5 bg-primary text-black rounded hover:bg-primary-container font-bold text-[10px] uppercase tracking-[0.2em] transition-all flex items-center gap-2 cursor-pointer"
+            className="px-6 py-2.5 bg-primary text-black rounded hover:bg-primary-container font-bold text-[10px] uppercase tracking-[0.2em] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
           >
             <Plus size={14} /> Add Transaction
           </button>
@@ -320,7 +320,7 @@ export default function PortfolioPage() {
           </p>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] uppercase tracking-[0.2em] font-bold transition-colors cursor-pointer"
+            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] uppercase tracking-[0.2em] font-bold active:scale-[0.98] transition-all cursor-pointer"
           >
             + Add First Fund
           </button>
@@ -461,13 +461,13 @@ export default function PortfolioPage() {
                             <div className="flex gap-2 justify-center">
                               <button 
                                 onClick={() => handleEditClick(item)} 
-                                className="p-1.5 hover:text-primary hover:bg-white/5 rounded text-white/50 transition-colors cursor-pointer"
+                                className="p-1.5 hover:text-primary hover:bg-white/5 rounded text-white/50 active:scale-90 transition-all cursor-pointer"
                               >
                                 <Edit3 size={13} />
                               </button>
                               <button 
                                 onClick={() => handleDeleteTransaction(item.id)} 
-                                className="p-1.5 hover:text-danger-red hover:bg-white/5 rounded text-white/50 transition-colors cursor-pointer"
+                                className="p-1.5 hover:text-danger-red hover:bg-white/5 rounded text-white/50 active:scale-90 transition-all cursor-pointer"
                               >
                                 <Trash2 size={13} />
                               </button>
@@ -503,7 +503,7 @@ export default function PortfolioPage() {
               transition={{ type: 'spring', stiffness: 300, damping: 26 }}
               className="relative glass-panel bg-[#090b14] border border-white/10 w-full max-w-lg p-8 rounded-2xl shadow-2xl z-10"
             >
-              <button className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors cursor-pointer" onClick={() => setShowAddModal(false)}>
+              <button className="absolute top-4 right-4 text-white/40 hover:text-white active:scale-90 transition-all cursor-pointer" onClick={() => setShowAddModal(false)}>
                 <X size={20} />
               </button>
               <h3 className="text-2xl font-serif italic text-white mb-6">
@@ -611,7 +611,7 @@ export default function PortfolioPage() {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-primary text-black hover:bg-primary-container font-bold rounded text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer mt-4"
+                  className="w-full py-3.5 bg-primary text-black hover:bg-primary-container font-bold rounded text-[10px] uppercase tracking-[0.2em] active:scale-[0.98] transition-all cursor-pointer mt-4"
                 >
                   {editingId ? 'Update Transaction' : 'Save Investment'}
                 </button>
