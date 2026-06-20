@@ -147,14 +147,16 @@ export default function Home() {
                 Current Release
               </motion.span>
               
-              <h1 className="text-4xl sm:text-6xl lg:text-[100px] leading-[0.85] font-light tracking-tighter italic font-serif mb-8 text-on-surface">
-                <span className="block">
+              <h1 
+                className="leading-[0.85] font-light italic font-serif mb-8 text-on-surface text-balance"
+                style={{ fontSize: 'clamp(2.25rem, 6vw, 6rem)', letterSpacing: '-0.03em' }}
+              >
+                <span className="flex flex-wrap justify-center items-center gap-x-3 lg:gap-x-6">
                   <motion.span
                     custom={0}
                     variants={enableMotion ? wordVariant : undefined}
                     initial={enableMotion ? "hidden" : { opacity: 1 }}
                     animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
-                    className="inline-block mr-4 lg:mr-6"
                   >
                     {enableMotion ? <ScrambleText text="Is" delay={400} duration={24} /> : "Is"}
                   </motion.span>
@@ -163,13 +165,12 @@ export default function Home() {
                     variants={enableMotion ? wordVariant : undefined}
                     initial={enableMotion ? "hidden" : { opacity: 1 }}
                     animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
-                    className="inline-block mr-4 lg:mr-6"
                   >
                     {enableMotion ? <ScrambleText text="your" delay={500} duration={24} /> : "your"}
                   </motion.span>
                   
                   {/* Inline Typographic Spell (Glassmorphic Pill) */}
-                  <span className="inline-flex items-center justify-center w-20 h-9 sm:w-28 sm:h-11 md:w-36 md:h-14 rounded-full align-middle bg-gradient-to-r from-primary/20 to-info-blue/20 mx-2 sm:mx-3 border border-white/10 shadow-[0_0_25px_rgba(242,125,38,0.2)] overflow-hidden relative select-none">
+                  <span className="inline-flex items-center justify-center w-20 h-9 sm:w-28 sm:h-11 md:w-36 md:h-14 rounded-full bg-gradient-to-r from-primary/20 to-info-blue/20 border border-white/10 shadow-[0_0_25px_rgba(242,125,38,0.2)] overflow-hidden relative select-none">
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
                     <TrendingUp size={22} className="text-[#F27D26] animate-pulse" />
                   </span>
@@ -179,18 +180,16 @@ export default function Home() {
                     variants={enableMotion ? wordVariant : undefined}
                     initial={enableMotion ? "hidden" : { opacity: 1 }}
                     animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
-                    className="inline-block mr-4 lg:mr-6"
                   >
                     {enableMotion ? <ScrambleText text="fund" delay={600} duration={24} /> : "fund"}
                   </motion.span>
                 </span>
-                <span className="block not-italic font-bold tracking-[-0.04em] text-primary mt-2">
+                <span className="flex flex-wrap justify-center items-center gap-x-3 lg:gap-x-6 not-italic font-bold tracking-[-0.04em] text-primary mt-2">
                   <motion.span
                     custom={3}
                     variants={enableMotion ? wordVariant : undefined}
                     initial={enableMotion ? "hidden" : { opacity: 1 }}
                     animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
-                    className="inline-block mr-4 lg:mr-6"
                   >
                     {enableMotion ? <ScrambleText text="actually" delay={700} duration={24} /> : "actually"}
                   </motion.span>
@@ -199,7 +198,6 @@ export default function Home() {
                     variants={enableMotion ? wordVariant : undefined}
                     initial={enableMotion ? "hidden" : { opacity: 1 }}
                     animate={isRevealed && enableMotion ? "visible" : { opacity: 1 }}
-                    className="inline-block mr-4 lg:mr-6"
                   >
                     {enableMotion ? <ScrambleText text="working?" delay={800} duration={24} /> : "working?"}
                   </motion.span>
@@ -213,7 +211,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 1 }}
               className="max-w-md text-lg leading-relaxed text-on-surface-variant font-light"
             >
-              Exploring the intersection of high-fidelity data and your portfolio. A study on visual rhythm and interactive wealth generation.
+              FundScope scores 5,800 SEBI registered funds on risk adjusted return, alpha generation, and multi horizon performance, so you stop guessing.
             </motion.p>
             
             <motion.div 
@@ -337,7 +335,7 @@ export default function Home() {
                       const isPos = fund.cagr_1yr >= 0;
                       return (
                       <div key={idx} className="flex justify-between items-center p-3 bg-white/5 rounded-lg border border-white/5 overflow-hidden">
-                        <span className="text-sm font-serif italic text-white/90 truncate mr-2" title={fund.name}>{fund.name.split(' - ')[0].replace(' Fund', '').slice(0, 18)}</span>
+                        <span className="text-sm font-serif italic text-white/90 truncate mr-2" title={fund.name}>{fund.name.split(' - ')[0].replace(' Fund', '')}</span>
                         <span className={`text-xs font-mono font-bold whitespace-nowrap ${isPos ? 'text-success-teal' : 'text-red-400'}`}>
                           {isPos ? '+' : ''}{Number(fund.cagr_1yr).toFixed(1)}%
                         </span>
@@ -457,7 +455,7 @@ export default function Home() {
       {/* Bento Grid Features & 3D Globe Section */}
       <section className="w-full max-w-7xl mx-auto pt-32 pb-24 px-margin-mobile md:px-margin-desktop relative z-10">
         <div className="mb-20 text-center">
-          <h2 className="text-3xl md:text-5xl font-serif italic text-white mb-4">Observatory Core Intelligence</h2>
+          <h2 className="text-3xl md:text-5xl font-serif italic text-white mb-4 text-balance">Observatory Core Intelligence</h2>
           <p className="text-on-surface-variant max-w-2xl mx-auto text-base md:text-lg font-light">
             Discover how FundScope transforms raw data into actionable intelligence through cutting-edge visualization and algorithmic grading.
           </p>

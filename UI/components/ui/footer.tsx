@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-container-max mx-auto w-full flex justify-between items-center">
         <div className="flex items-center gap-4">
           <div className="w-3 h-3 rounded-full bg-primary"></div>
-          <span className="text-[11px] uppercase tracking-[0.2em] font-bold">Live Interface Alpha</span>
+          <span className="text-[11px] uppercase tracking-[0.2em] font-bold">v1.0</span>
         </div>
         
         <div className="md:flex gap-16 hidden">
@@ -15,11 +15,6 @@ export default function Footer() {
             <Link href="/about" className="text-[11px] font-medium tracking-wider hover:text-primary transition-colors">About FundScope</Link>
             <Link href="/risk-profile" className="text-[11px] font-medium tracking-wider hover:text-primary transition-colors">Risk Assessment</Link>
           </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-[9px] uppercase tracking-widest opacity-40 mb-1 text-on-surface">Project Location</span>
-            <span className="text-[11px] font-medium tracking-wider">40.7128° N, 74.0060° W</span>
-          </div>
-
         </div>
       </div>
     </footer>

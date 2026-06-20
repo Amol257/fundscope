@@ -15,11 +15,11 @@ export function GradeTag({ grade, className, showMeaning = true }: GradeTagProps
     label = grade;
   } else if (showMeaning) {
     switch (letter) {
-      case 'S': label = 'S — Excellent'; break;
-      case 'A': label = 'A — Good'; break;
-      case 'B': label = 'B — Average'; break;
-      case 'C': label = 'C — Below Average'; break;
-      case 'D': label = 'D — Avoid'; break;
+      case 'S': label = 'S: Excellent'; break;
+      case 'A': label = 'A: Good'; break;
+      case 'B': label = 'B: Average'; break;
+      case 'C': label = 'C: Below Average'; break;
+      case 'D': label = 'D: Avoid'; break;
     }
   }
 

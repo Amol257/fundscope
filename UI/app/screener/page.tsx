@@ -2,12 +2,14 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Search, ArrowUpDown, ArrowUp, ArrowDown, Download, AlertTriangle, Plus, Minus, ArrowRight } from 'lucide-react';
 import fundData from '@/lib/compact-data.json';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
 import { GradeTag } from '@/components/GradeTag';
 import { ParallaxLayer } from '@/components/ui/motion/ParallaxLayer';
+import { EASE_ENTRANCE } from '@/lib/motion';
 
 type SortConfig = {
   key: string;
@@ -18,6 +20,7 @@ const FILTERS = ['All Funds', 'Equity', 'Debt', 'Hybrid', 'Index & ETF', 'Sector
 const GRADES = ['All Grades', 'S', 'A', 'B', 'C', 'D'];
 
 export default function ScreenerPage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('All Funds');
   const [activeGrade, setActiveGrade] = useState('All Grades');
@@ -316,11 +319,26 @@ export default function ScreenerPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <motion.tbody 
+                  className="divide-y divide-white/5"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: {},
+                    visible: { transition: { staggerChildren: 0.035 } }
+                  }}
+                >
                   {paginatedFunds.map((fund, i) => (
-                    <tr key={fund.code || i} className="hover:bg-white/5 transition-colors group">
+                    <motion.tr 
+                      key={fund.code || i} 
+                      className="hover:bg-white/5 transition-colors group"
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_ENTRANCE } }
+                      }}
+                    >
                       <td className="p-4">
-                        <Link href={`/fund/${fund.code}`} className="block">
+                        <Link href={`/fund/${fund.code}`} className="block" onMouseEnter={() => router.prefetch(`/fund/${fund.code}`)}>
                           <div className="text-sm font-serif italic text-white group-hover:text-primary transition-colors max-w-[250px] truncate">
                             {fund.name.split(' - ')[0]}
                           </div>
@@ -355,9 +373,9 @@ export default function ScreenerPage() {
                           {compareList.find(f => f.code === fund.code) ? <Minus size={14} /> : <Plus size={14} />}
                         </button>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
-                </tbody>
+                </motion.tbody>
               </table>
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center py-24">

@@ -1,7 +1,7 @@
 import fundData from '@/lib/data.json';
 import compactData from '@/lib/compact-data.json';
 import { Metadata } from 'next';
-import FundDetailClient from './FundDetailClient';
+import FundDetailClient from './FundDetailClientWrapper';
 
 export async function generateStaticParams() {
   return compactData.funds.map((fund) => ({

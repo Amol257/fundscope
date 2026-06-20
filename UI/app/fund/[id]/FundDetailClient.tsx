@@ -16,6 +16,12 @@ import { TiltCard } from '@/components/ui/TiltCard';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import compactData from '@/lib/compact-data.json';
+import dynamic from 'next/dynamic';
+
+const GradeCube = dynamic(
+  () => import('@/components/ui/GradeCube').then(mod => mod.GradeCube),
+  { ssr: false, loading: () => <div className="w-[72px] h-[72px]" /> }
+);
 
 interface NavPoint {
   date: string;
@@ -593,7 +599,7 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
           <div className="flex flex-col items-start lg:items-end">
             <span className="text-[9px] uppercase tracking-[0.2em] text-white/40">Analyser Score</span>
             <div className="flex items-center gap-4 mt-2">
-              <span className="text-6xl font-serif italic text-primary">{gradeLetter}</span>
+              <GradeCube grade={gradeLetter} />
               <div className="flex flex-col items-start gap-1">
                 <div className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center relative bg-surface-container-low">
                   <span className="text-xs font-number font-bold text-white/80">{fund.score !== null ? <AnimateNumber value={Math.round(fund.score)} /> : 'N/A'}</span>
@@ -609,11 +615,11 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
         
         {/* Left Column: Charts */}
-        <div className="lg:col-span-8 flex flex-col gap-8">
+        <div className="lg:col-span-8 flex flex-col gap-8 w-full">
           {/* Timeline Chart */}
-          <motion.div variants={itemVariants} className="h-[500px]">
-            <TiltCard className="block h-full" maxTilt={3} glareEnabled={true}>
-              <div className="glass-panel p-8 flex flex-col h-full shadow-2xl relative overflow-hidden">
+          <motion.div variants={itemVariants} className="h-[500px] w-full">
+            <TiltCard className="block h-full w-full" maxTilt={3} glareEnabled={true}>
+              <div className="glass-panel p-8 flex flex-col h-full w-full shadow-2xl relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
                 
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 border-b border-white/10 pb-4 relative z-10 gap-2">
@@ -681,9 +687,9 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
 
           {/* Rolling Returns Chart */}
           {advancedMetrics && (advancedMetrics.roll1Y.length > 0 || advancedMetrics.roll3Y.length > 0) && (
-            <motion.div variants={itemVariants} className="h-[400px]">
-              <TiltCard className="block h-full" maxTilt={3} glareEnabled={true}>
-                <div className="glass-panel p-8 flex flex-col h-full shadow-2xl relative overflow-hidden">
+            <motion.div variants={itemVariants} className="h-[400px] w-full">
+              <TiltCard className="block h-full w-full" maxTilt={3} glareEnabled={true}>
+                <div className="glass-panel p-8 flex flex-col h-full w-full shadow-2xl relative overflow-hidden">
                   <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 relative z-10">
                     <div>
                       <h3 className="text-xl font-serif italic text-on-surface">Rolling Returns</h3>
@@ -763,53 +769,53 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
           
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <motion.div variants={itemVariants} className="h-full">
-              <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
+            <motion.div variants={itemVariants} className="h-full w-full">
+              <TiltCard maxTilt={5} glareEnabled={false} className="block h-full w-full">
                 <MetricCard 
                   label="5Y CAGR" 
                   value={calculatedFundCAGR.cagr5Yr !== null ? `${calculatedFundCAGR.cagr5Yr.toFixed(2)}%` : 'N/A'} 
                   valueClassName="text-primary"
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </TiltCard>
             </motion.div>
-            <motion.div variants={itemVariants} className="h-full">
-              <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
+            <motion.div variants={itemVariants} className="h-full w-full">
+              <TiltCard maxTilt={5} glareEnabled={false} className="block h-full w-full">
                 <MetricCard 
                   label="Sharpe Ratio" 
                   value={calculatedSharpe !== null ? calculatedSharpe.toFixed(3) : 'N/A'} 
                   tooltip="Sharpe Ratio = (Fund Return − 7.0% risk-free rate) / Volatility. Above 0.5 is considered good for Indian equity funds."
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </TiltCard>
             </motion.div>
-            <motion.div variants={itemVariants} className="h-full">
-              <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
+            <motion.div variants={itemVariants} className="h-full w-full">
+              <TiltCard maxTilt={5} glareEnabled={false} className="block h-full w-full">
                 <MetricCard 
                   label="Active Alpha (5Y)" 
                   value={calculatedAlpha !== null ? (calculatedAlpha >= 0 ? '+' : '') + calculatedAlpha.toFixed(2) + '%' : 'N/A'} 
                   valueClassName={calculatedAlpha !== null && calculatedAlpha >= 0 ? 'text-emerald-400' : 'text-red-400'}
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </TiltCard>
             </motion.div>
-            <motion.div variants={itemVariants} className="h-full">
-              <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
+            <motion.div variants={itemVariants} className="h-full w-full">
+              <TiltCard maxTilt={5} glareEnabled={false} className="block h-full w-full">
                 <MetricCard 
                   label="Volatility" 
                   value={calculatedVolatility !== null ? `${calculatedVolatility.toFixed(1)}%` : 'N/A'} 
                   delta={`(${volRating})`}
                   valueClassName="text-white/60 text-xl"
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </TiltCard>
             </motion.div>
           </div>
 
           {/* Radar Chart (DNA) */}
-          <motion.div variants={itemVariants} className="h-[340px]">
-            <TiltCard className="block h-full" maxTilt={5} glareEnabled={true}>
-              <div className="glass-panel p-6 flex flex-col items-center justify-center h-full shadow-2xl relative">
+          <motion.div variants={itemVariants} className="flex-1 w-full min-h-[340px]">
+            <TiltCard className="block h-full w-full" maxTilt={5} glareEnabled={true}>
+              <div className="glass-panel p-6 flex flex-col items-center justify-center h-full w-full shadow-2xl relative">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
                 <h3 className="text-[9px] uppercase tracking-[0.2em] text-white/50 mb-4 self-start font-bold">Fund DNA</h3>
                 <div className="w-full h-full -mt-2">
@@ -835,11 +841,11 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
       </div>
 
       {/* Recommendation Card & Additional Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch w-full">
         {/* Recommendation Panel */}
-        <motion.div variants={itemVariants} className="h-full">
-          <TiltCard className="block h-full" maxTilt={3} glareEnabled={false}>
-            <div className={`border p-8 flex flex-col gap-4 shadow-2xl rounded-xl h-full ${rec.color}`}>
+        <motion.div variants={itemVariants} className="h-full w-full">
+          <TiltCard className="block h-full w-full" maxTilt={3} glareEnabled={false}>
+            <div className={`border p-8 flex flex-col gap-4 shadow-2xl rounded-xl h-full w-full ${rec.color}`}>
               <div className="flex items-center gap-4">
                 {rec.icon}
                 <div>
@@ -853,9 +859,9 @@ export default function FundDetailClient({ fund, benchHistory, benchName }: Fund
         </motion.div>
 
         {/* Statistical Consistency Summary */}
-        <motion.div variants={itemVariants} className="h-full">
-          <TiltCard className="block h-full" maxTilt={3} glareEnabled={true}>
-            <div className="glass-panel p-8 flex flex-col justify-between shadow-2xl rounded-xl h-full">
+        <motion.div variants={itemVariants} className="h-full w-full">
+          <TiltCard className="block h-full w-full" maxTilt={3} glareEnabled={true}>
+            <div className="glass-panel p-8 flex flex-col justify-between shadow-2xl rounded-xl h-full w-full">
               <div>
                 <h3 className="text-xl font-serif italic text-on-surface mb-2 flex items-center gap-2">
                   <Percent size={18} className="text-[#F27D26]" /> Rolling Return Consistency

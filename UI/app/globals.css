@@ -7,19 +7,19 @@
   --color-inverse-primary: #f2a672;
   --color-on-primary: #000000;
   
-  --color-background: #0c0c0c;
-  --color-on-background: #f2f2f2;
+  --color-background: oklch(7% 0.008 55);
+  --color-on-background: oklch(90% 0.006 55);
 
-  --color-surface: #0c0c0c;
-  --color-surface-dim: #080808;
-  --color-surface-bright: #1a1a1a;
-  --color-surface-container-lowest: #050505;
-  --color-surface-container-low: #111111;
-  --color-surface-container: #151515;
-  --color-surface-container-high: #1a1a1a;
-  --color-surface-container-highest: #222222;
-  --color-on-surface: #f2f2f2;
-  --color-on-surface-variant: rgba(242, 242, 242, 0.6);
+  --color-surface: oklch(10% 0.010 55);
+  --color-surface-dim: oklch(7% 0.008 55);
+  --color-surface-bright: oklch(13% 0.010 55);
+  --color-surface-container-lowest: oklch(6% 0.008 55);
+  --color-surface-container-low: oklch(8% 0.009 55);
+  --color-surface-container: oklch(10% 0.010 55);
+  --color-surface-container-high: oklch(13% 0.010 55);
+  --color-surface-container-highest: oklch(16% 0.012 55);
+  --color-on-surface: oklch(90% 0.006 55);
+  --color-on-surface-variant: oklch(55% 0.006 55);
   --color-inverse-surface: #f2f2f2;
   --color-inverse-on-surface: #0c0c0c;
   --color-surface-tint: #F27D26;

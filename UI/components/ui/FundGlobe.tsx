@@ -175,6 +175,8 @@ export function FundGlobe({ funds }: { funds: any[] }) {
           enablePan={false} 
           autoRotate 
           autoRotateSpeed={0.5} 
+          enableDamping={true}
+          dampingFactor={0.08}
           minDistance={3}
           maxDistance={10}
         />
