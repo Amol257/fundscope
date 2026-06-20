@@ -218,17 +218,17 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isRevealed ? 1 : 0, y: isRevealed ? 0 : 20 }}
               transition={{ duration: 0.8, delay: 1.1 }}
-              className="flex flex-col sm:flex-row gap-4 mt-4"
+              className="flex flex-col sm:flex-row gap-4 mt-4 w-fit mx-auto"
             >
-              <Link href="/explorer" passHref>
+              <Link href="/explorer" passHref className="w-full sm:w-fit">
                 <MagneticButton 
-                  className="bg-primary text-on-primary px-8 py-4 rounded hover:bg-primary-container transition-all text-[11px] font-bold tracking-[0.2em] uppercase shadow flex items-center justify-center gap-2 group w-fit"
+                  className="bg-primary text-on-primary px-8 py-4 rounded hover:bg-primary-container transition-all text-[11px] font-bold tracking-[0.2em] uppercase shadow flex items-center justify-center gap-2 group w-full sm:w-fit"
                 >
                   Explore Funds
                   <span className="transition-transform group-hover:translate-x-1 inline-flex"><ArrowRight size={20} /></span>
                 </MagneticButton>
               </Link>
-              <AnimatedArrowLink href="/sip" className="bg-surface-container text-on-surface px-8 py-4 rounded hover:bg-surface-container-high transition-all text-[11px] font-bold tracking-[0.2em] uppercase shadow border border-white/10 flex items-center justify-center gap-2 w-fit">
+              <AnimatedArrowLink href="/sip" className="bg-surface-container text-on-surface px-8 py-4 rounded hover:bg-surface-container-high transition-all text-[11px] font-bold tracking-[0.2em] uppercase shadow border border-white/10 flex items-center justify-center gap-2 w-full sm:w-fit">
                 Analyze Portfolio
               </AnimatedArrowLink>
             </motion.div>
