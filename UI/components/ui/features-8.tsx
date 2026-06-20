@@ -16,7 +16,7 @@ export function Features() {
                                             fill="currentColor"
                                         />
                                     </svg>
-                                    <span className="mx-auto block w-fit text-5xl font-medium text-primary">10+</span>
+                                    <span className="mx-auto block w-fit text-5xl font-medium text-primary -translate-x-2 relative z-10">10+</span>
                                 </div>
                                 <h2 className="mt-6 text-center text-2xl font-semibold text-white/90">Years of Data</h2>
                                 <p className="mt-2 text-center text-sm text-white/60">Historical performance metrics and risk calculations.</p>

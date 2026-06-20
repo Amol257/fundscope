@@ -237,16 +237,16 @@ export default function InsightsPage() {
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="absolute top-8 right-8 md:right-12 text-[7px] md:text-[8px] font-bold tracking-widest uppercase text-amber-400/70 z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded border border-amber-400/20 text-right">
               High Return · High Risk
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="absolute bottom-28 left-16 md:left-20 text-[7px] md:text-[8px] font-bold tracking-widest uppercase text-blue-400/70 z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded border border-blue-400/20">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="absolute bottom-40 md:bottom-36 left-16 md:left-20 text-[7px] md:text-[8px] font-bold tracking-widest uppercase text-blue-400/70 z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded border border-blue-400/20">
               Low Return · Low Risk
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="absolute bottom-28 right-8 md:right-12 text-[7px] md:text-[8px] font-bold tracking-widest uppercase text-red-400/70 z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded border border-red-400/20 text-right">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="absolute bottom-40 md:bottom-36 right-8 md:right-12 text-[7px] md:text-[8px] font-bold tracking-widest uppercase text-red-400/70 z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded border border-red-400/20 text-right">
               Low Return · High Risk
             </motion.div>
 
             {isMounted && quadrantData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={500}>
-                <ScatterChart margin={{ top: 30, right: 30, bottom: 60, left: 20 }}>
+              <ResponsiveContainer width="100%" height={550}>
+                <ScatterChart margin={{ top: 30, right: 30, bottom: 110, left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                   <XAxis 
                     type="number" 
@@ -258,7 +258,7 @@ export default function InsightsPage() {
                     tickLine={false}
                     tickCount={8}
                     tickFormatter={(val) => `${val}%`}
-                    label={{ value: "← Lower Risk                    Volatility                    Higher Risk →", position: "bottom", fill: "rgba(255,255,255,0.35)", fontSize: 9, offset: 15 }}
+                    label={{ value: "← Lower Risk                    Volatility                    Higher Risk →", position: "bottom", fill: "rgba(255,255,255,0.35)", fontSize: 9, offset: 25 }}
                     reversed={true}
                   />
                   <YAxis 
@@ -277,7 +277,7 @@ export default function InsightsPage() {
                   <Tooltip content={<QuadrantTooltip />} cursor={{ strokeDasharray: '3 3', stroke: 'rgba(255,255,255,0.2)' }} />
                   <Legend 
                     verticalAlign="bottom" 
-                    wrapperStyle={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.08em', paddingTop: '20px' }} 
+                    wrapperStyle={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.08em', paddingTop: '30px' }} 
                   />
                   
                   <ReferenceLine y={quadrantMedians.return} stroke="rgba(255,255,255,0.2)" strokeDasharray="3 3" />
