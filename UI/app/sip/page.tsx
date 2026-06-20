@@ -385,7 +385,7 @@ export default function SIPCalculator() {
                 <div>
                   <div className="flex justify-between items-end mb-3">
                     <label className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/60">Initial Investment</label>
-                    <span className="text-xl font-medium text-red-400 font-bold">{formatCurrency(feePrincipal)}</span>
+                    <span className="text-xl text-red-400 font-bold">{formatCurrency(feePrincipal)}</span>
                   </div>
                   <input 
                     type="range" 
@@ -474,7 +474,7 @@ export default function SIPCalculator() {
                   <Landmark className="text-emerald-400" size={16} />
                 </div>
                 <div>
-                  <span className="text-2xl font-medium text-emerald-400 font-bold">{formatCurrency(feeResults.indexValue)}</span>
+                  <span className="text-2xl text-emerald-400 font-bold">{formatCurrency(feeResults.indexValue)}</span>
                   <p className="text-[9px] text-white/40 mt-1 uppercase tracking-wider font-mono">Net compounding: {(assumedGrossReturn - 0.1).toFixed(1)}%</p>
                 </div>
               </motion.div>
@@ -506,7 +506,7 @@ export default function SIPCalculator() {
                   <Percent className="text-red-400" size={16} />
                 </div>
                 <div>
-                  <span className="text-2xl font-medium text-red-400 font-bold">{formatCurrency(feeResults.lost)}</span>
+                  <span className="text-2xl text-red-400 font-bold">{formatCurrency(feeResults.lost)}</span>
                   <p className="text-[9px] text-red-400/60 mt-1 uppercase tracking-wider font-mono">Eroded by Active Fees</p>
                 </div>
               </motion.div>
@@ -528,7 +528,7 @@ export default function SIPCalculator() {
                 
                 <div className="text-center shrink-0 px-8 py-6 bg-red-500/5 border border-red-500/10 rounded">
                   <span className="text-[8px] uppercase tracking-[0.2em] text-red-400 block font-mono font-bold mb-1">Total Fee Loss</span>
-                  <span className="text-3xl font-medium text-red-400 font-bold">{formatCurrency(feeResults.lost)}</span>
+                  <span className="text-3xl text-red-400 font-bold">{formatCurrency(feeResults.lost)}</span>
                 </div>
               </div>
 

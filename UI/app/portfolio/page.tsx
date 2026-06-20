@@ -556,7 +556,7 @@ export default function PortfolioPage() {
 
                 {/* Purchase Date */}
                 <div>
-                  <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold flex items-center gap-1">
+                  <label className="text-[9px] uppercase tracking-wider text-white/40 mb-2 font-bold flex items-center gap-1">
                     <Calendar size={12} /> Purchase Date
                   </label>
                   <input
@@ -585,7 +585,7 @@ export default function PortfolioPage() {
 
                   {/* Buy NAV */}
                   <div>
-                    <label className="text-[9px] uppercase tracking-wider text-white/40 block mb-2 font-bold flex items-center justify-between">
+                    <label className="text-[9px] uppercase tracking-wider text-white/40 mb-2 font-bold flex items-center justify-between">
                       <span>Buy NAV (₹)</span>
                       {fetchingNav && <span className="text-[9px] text-[#F27D26] animate-pulse uppercase">Fetching...</span>}
                     </label>

@@ -245,8 +245,8 @@ export default function InsightsPage() {
             </motion.div>
 
             {isMounted && quadrantData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={550}>
-                <ScatterChart margin={{ top: 30, right: 30, bottom: 110, left: 20 }}>
+              <ResponsiveContainer width="100%" height={600}>
+                <ScatterChart margin={{ top: 30, right: 30, bottom: 160, left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                   <XAxis 
                     type="number" 
@@ -277,7 +277,7 @@ export default function InsightsPage() {
                   <Tooltip content={<QuadrantTooltip />} cursor={{ strokeDasharray: '3 3', stroke: 'rgba(255,255,255,0.2)' }} />
                   <Legend 
                     verticalAlign="bottom" 
-                    wrapperStyle={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.08em', paddingTop: '30px' }} 
+                    wrapperStyle={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.08em', paddingTop: '60px', marginTop: '10px' }} 
                   />
                   
                   <ReferenceLine y={quadrantMedians.return} stroke="rgba(255,255,255,0.2)" strokeDasharray="3 3" />
