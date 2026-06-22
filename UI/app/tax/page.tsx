@@ -323,8 +323,8 @@ export default function TaxCorner() {
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-white/5">
-                      <div className="text-[9px] text-white/40 uppercase tracking-wider mb-1">Expense Ratio</div>
-                      <div className="text-sm font-medium text-white">{(fund as any).expense_ratio ? `${(fund as any).expense_ratio}%` : '-'}</div>
+                      <div className="text-[9px] text-white/40 uppercase tracking-wider mb-1">1Y CAGR</div>
+                      <div className="text-sm font-medium text-white">{fund.cagr_1yr ? `${fund.cagr_1yr.toFixed(1)}%` : '-'}</div>
                     </div>
                   </div>
                 </Link>
